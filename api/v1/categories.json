@@ -1,0 +1,60 @@
+{
+  "categories": [
+    {
+      "id": "ice",
+      "name_es": "Hielo y nieve",
+      "name_en": "Ice and snow",
+      "color": "#4DB6AC",
+      "analogy_es": "Un glaciar es como una cuenta de ahorros de agua: en invierno deposita nieve y en verano retira hielo. Si año tras año retira más de lo que deposita, la cuenta se vacía.",
+      "analogy_en": "A glacier is like a water savings account: winter deposits snow and summer withdraws ice. If it withdraws more than it deposits year after year, the account runs dry."
+    },
+    {
+      "id": "drought",
+      "name_es": "Calor y sequía",
+      "name_en": "Heat and drought",
+      "color": "#C5E384",
+      "analogy_es": "El suelo funciona como una esponja: si llueve menos y hace más calor, se seca, y una esponja reseca tarda mucho en volver a absorber agua.",
+      "analogy_en": "Soil works like a sponge: with less rain and more heat it dries out, and a dried-out sponge takes a long time to soak up water again."
+    },
+    {
+      "id": "fire",
+      "name_es": "Incendios",
+      "name_en": "Wildfires",
+      "color": "#8BC34A",
+      "analogy_es": "Un bosque reseco es como leña ya apilada: no hace falta más fuego, solo una chispa en el peor momento.",
+      "analogy_en": "A parched forest is like a stack of firewood: it doesn’t need more fire, just one spark at the worst moment."
+    },
+    {
+      "id": "flood",
+      "name_es": "Inundaciones",
+      "name_en": "Floods",
+      "color": "#00897B",
+      "analogy_es": "Un río es como una tubería: si en pocas horas cae la lluvia de un mes entero, el agua no cabe y se desborda.",
+      "analogy_en": "A river is like a pipe: if a whole month of rain falls in a few hours, the water doesn’t fit and spills over."
+    },
+    {
+      "id": "coast",
+      "name_es": "Costas y nivel del mar",
+      "name_en": "Coasts and sea level",
+      "color": "#B2EBF2",
+      "analogy_es": "Es como una bañera casi llena: subir el agua unos pocos centímetros hace que cada ola llegue más lejos sobre el piso.",
+      "analogy_en": "It’s like an almost-full bathtub: raising the water just a few centimeters makes every wave reach farther across the floor."
+    },
+    {
+      "id": "water",
+      "name_es": "Lagos, ríos y embalses",
+      "name_en": "Lakes, rivers and reservoirs",
+      "color": "#006064",
+      "analogy_es": "Un lago es como una cuenta bancaria: entran ríos y lluvia, salen evaporación y riego. Si las salidas crecen, el saldo baja.",
+      "analogy_en": "A lake is like a bank account: rivers and rain come in, evaporation and irrigation go out. If withdrawals grow, the balance drops."
+    },
+    {
+      "id": "forest",
+      "name_es": "Bosques y vegetación",
+      "name_en": "Forests and vegetation",
+      "color": "#A7C957",
+      "analogy_es": "Mirar la vegetación desde el espacio es como revisar el color de las hojas de una planta en casa: el verde intenso indica salud, el amarillo indica problemas.",
+      "analogy_en": "Looking at vegetation from space is like checking a houseplant’s leaves: deep green means healthy, yellow means trouble."
+    }
+  ]
+}

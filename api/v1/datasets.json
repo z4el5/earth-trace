@@ -1,0 +1,157 @@
+{
+  "datasets": [
+    {
+      "id": "landsat",
+      "name": "Landsat 8–9 / HLS",
+      "agency": "NASA–USGS",
+      "measures_es": "Imágenes de 30 m para ver cambios en el paisaje.",
+      "measures_en": "30 m imagery to see landscape change.",
+      "analogy_es": "El álbum de fotos de la Tierra: lleva tomando fotos desde 1972.",
+      "analogy_en": "Earth’s photo album: it has been taking pictures since 1972."
+    },
+    {
+      "id": "lst",
+      "name": "MODIS MOD11A2",
+      "agency": "NASA",
+      "measures_es": "Temperatura de la superficie terrestre.",
+      "measures_en": "Land surface temperature.",
+      "analogy_es": "Un termómetro infrarrojo, como el de la frente, pero apuntando al suelo desde el espacio.",
+      "analogy_en": "An infrared thermometer, like a forehead one, pointed at the ground from space."
+    },
+    {
+      "id": "ndvi",
+      "name": "MODIS MOD13Q1",
+      "agency": "NASA",
+      "measures_es": "Índice de vegetación (NDVI) a 250 m.",
+      "measures_en": "Vegetation index (NDVI) at 250 m.",
+      "analogy_es": "Un medidor de salud de las plantas: cuanto más verde activo, más alto el número.",
+      "analogy_en": "A plant health meter: the more active green, the higher the number."
+    },
+    {
+      "id": "snow",
+      "name": "MODIS MOD10A1",
+      "agency": "NASA",
+      "measures_es": "Cobertura de nieve diaria.",
+      "measures_en": "Daily snow cover.",
+      "analogy_es": "Como pasar lista cada día: ¿hay nieve aquí, sí o no?",
+      "analogy_en": "Like taking attendance every day: is there snow here, yes or no?"
+    },
+    {
+      "id": "gpm",
+      "name": "GPM IMERG",
+      "agency": "NASA–JAXA",
+      "measures_es": "Precipitación global cada media hora.",
+      "measures_en": "Global precipitation every half hour.",
+      "analogy_es": "Un pluviómetro gigante que cubre todo el planeta.",
+      "analogy_en": "A giant rain gauge covering the whole planet."
+    },
+    {
+      "id": "smap",
+      "name": "SMAP L3",
+      "agency": "NASA",
+      "measures_es": "Humedad del suelo superficial.",
+      "measures_en": "Surface soil moisture.",
+      "analogy_es": "Como meter el dedo en la tierra de una maceta para saber si hay que regarla, pero desde el espacio.",
+      "analogy_en": "Like poking a finger in a flowerpot to see if it needs water, but from space."
+    },
+    {
+      "id": "grace",
+      "name": "GRACE / GRACE-FO",
+      "agency": "NASA–GFZ",
+      "measures_es": "Cambios en la masa de agua y de hielo.",
+      "measures_en": "Changes in water and ice mass.",
+      "analogy_es": "Una báscula en el espacio: dos satélites «pesan» el agua y el hielo por cómo cambia la gravedad.",
+      "analogy_en": "A scale in space: two satellites “weigh” water and ice through tiny changes in gravity."
+    },
+    {
+      "id": "firms",
+      "name": "FIRMS (MODIS / VIIRS)",
+      "agency": "NASA",
+      "measures_es": "Focos de incendio activos casi en tiempo real.",
+      "measures_en": "Near-real-time active fire detections.",
+      "analogy_es": "Un detector de humo del tamaño del planeta.",
+      "analogy_en": "A planet-sized smoke detector."
+    },
+    {
+      "id": "burn",
+      "name": "MODIS MCD64A1",
+      "agency": "NASA",
+      "measures_es": "Área quemada mensual.",
+      "measures_en": "Monthly burned area.",
+      "analogy_es": "La «cicatriz» que deja el fuego, medida mes a mes.",
+      "analogy_en": "The “scar” fire leaves behind, measured month by month."
+    },
+    {
+      "id": "sealevel",
+      "name": "Jason-3 / Sentinel-6",
+      "agency": "NASA–NOAA–ESA–EUMETSAT–CNES",
+      "measures_es": "Altimetría del nivel del mar (PO.DAAC).",
+      "measures_en": "Sea level altimetry (PO.DAAC).",
+      "analogy_es": "Una cinta métrica entre el satélite y la superficie del mar.",
+      "analogy_en": "A tape measure between the satellite and the sea surface."
+    },
+    {
+      "id": "sst",
+      "name": "MUR SST",
+      "agency": "NASA (PO.DAAC)",
+      "measures_es": "Temperatura de la superficie del mar.",
+      "measures_en": "Sea surface temperature.",
+      "analogy_es": "El termómetro del océano: una fiebre del mar blanquea los corales.",
+      "analogy_en": "The ocean’s thermometer: a sea “fever” bleaches corals."
+    },
+    {
+      "id": "sargassum",
+      "name": "AFAI (MODIS / VIIRS)",
+      "agency": "NASA – USF",
+      "measures_es": "Índice de algas flotantes para seguir el sargazo.",
+      "measures_en": "Floating algae index to track sargassum.",
+      "analogy_es": "Como buscar manchas marrones en una piscina azul, pero en todo el Atlántico.",
+      "analogy_en": "Like spotting brown patches in a blue pool, but across the whole Atlantic."
+    },
+    {
+      "id": "swot",
+      "name": "SWOT",
+      "agency": "NASA–CNES",
+      "measures_es": "Nivel y superficie de lagos, ríos y embalses.",
+      "measures_en": "Level and extent of lakes, rivers and reservoirs.",
+      "analogy_es": "Una regla gigante para medir cuánta agua tiene cada lago y río.",
+      "analogy_en": "A giant ruler measuring how much water each lake and river holds."
+    },
+    {
+      "id": "icesat",
+      "name": "ICESat-2",
+      "agency": "NASA",
+      "measures_es": "Elevación del hielo con láser.",
+      "measures_en": "Laser ice elevation.",
+      "analogy_es": "Un metro láser como el de los albañiles, midiendo el grosor del hielo.",
+      "analogy_en": "A laser measure like builders use, gauging ice thickness."
+    },
+    {
+      "id": "so2",
+      "name": "OMPS / OMI",
+      "agency": "NASA",
+      "measures_es": "Dióxido de azufre de erupciones volcánicas.",
+      "measures_en": "Sulfur dioxide from volcanic eruptions.",
+      "analogy_es": "Una nariz electrónica que «huele» los gases de los volcanes.",
+      "analogy_en": "An electronic nose that “smells” volcanic gases."
+    },
+    {
+      "id": "seaice",
+      "name": "Sea Ice Index (NSIDC DAAC)",
+      "agency": "NASA",
+      "measures_es": "Extensión del hielo marino.",
+      "measures_en": "Sea ice extent.",
+      "analogy_es": "Como medir cuánto ocupa el hielo en un vaso de agua, pero en el Ártico.",
+      "analogy_en": "Like measuring how much of a glass is ice, but in the Arctic."
+    },
+    {
+      "id": "nisar",
+      "name": "NISAR",
+      "agency": "NASA–ISRO",
+      "measures_es": "Radar para medir hundimiento del terreno (misión nueva).",
+      "measures_en": "Radar to measure land subsidence (new mission).",
+      "analogy_es": "Un nivel de burbuja que detecta si el suelo baja unos milímetros.",
+      "analogy_en": "A spirit level that notices if the ground sinks a few millimeters."
+    }
+  ]
+}

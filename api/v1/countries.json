@@ -1,0 +1,997 @@
+{
+  "version": "1.0",
+  "updated": "2026-11-14",
+  "count": 110,
+  "countries": [
+    {
+      "code": "DE",
+      "name_es": "Alemania",
+      "name_en": "Germany",
+      "region": "europe",
+      "also_region": null,
+      "category": "flood",
+      "agency": "Deutscher Wetterdienst (DWD)"
+    },
+    {
+      "code": "AT",
+      "name_es": "Austria",
+      "name_en": "Austria",
+      "region": "europe",
+      "also_region": null,
+      "category": "ice",
+      "agency": "GeoSphere Austria"
+    },
+    {
+      "code": "BE",
+      "name_es": "Bélgica",
+      "name_en": "Belgium",
+      "region": "europe",
+      "also_region": null,
+      "category": "flood",
+      "agency": "Institut Royal Météorologique (IRM-KMI)"
+    },
+    {
+      "code": "DK",
+      "name_es": "Dinamarca",
+      "name_en": "Denmark",
+      "region": "europe",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Danmarks Meteorologiske Institut (DMI)"
+    },
+    {
+      "code": "ES",
+      "name_es": "España",
+      "name_en": "Spain",
+      "region": "europe",
+      "also_region": null,
+      "category": "drought",
+      "agency": "Agencia Estatal de Meteorología (AEMET)"
+    },
+    {
+      "code": "FI",
+      "name_es": "Finlandia",
+      "name_en": "Finland",
+      "region": "europe",
+      "also_region": null,
+      "category": "ice",
+      "agency": "Ilmatieteen laitos (FMI)"
+    },
+    {
+      "code": "FR",
+      "name_es": "Francia",
+      "name_en": "France",
+      "region": "europe",
+      "also_region": null,
+      "category": "drought",
+      "agency": "Météo-France"
+    },
+    {
+      "code": "GR",
+      "name_es": "Grecia",
+      "name_en": "Greece",
+      "region": "europe",
+      "also_region": null,
+      "category": "fire",
+      "agency": "Hellenic National Meteorological Service (HNMS)"
+    },
+    {
+      "code": "IE",
+      "name_es": "Irlanda",
+      "name_en": "Ireland",
+      "region": "europe",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Met Éireann"
+    },
+    {
+      "code": "IS",
+      "name_es": "Islandia",
+      "name_en": "Iceland",
+      "region": "europe",
+      "also_region": null,
+      "category": "ice",
+      "agency": "Veðurstofa Íslands (IMO)"
+    },
+    {
+      "code": "IT",
+      "name_es": "Italia",
+      "name_en": "Italy",
+      "region": "europe",
+      "also_region": null,
+      "category": "water",
+      "agency": "Agenzia ItaliaMeteo"
+    },
+    {
+      "code": "NO",
+      "name_es": "Noruega",
+      "name_en": "Norway",
+      "region": "europe",
+      "also_region": null,
+      "category": "ice",
+      "agency": "Meteorologisk institutt (MET Norway)"
+    },
+    {
+      "code": "NL",
+      "name_es": "Países Bajos",
+      "name_en": "Netherlands",
+      "region": "europe",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Koninklijk Nederlands Meteorologisch Instituut (KNMI)"
+    },
+    {
+      "code": "PL",
+      "name_es": "Polonia",
+      "name_en": "Poland",
+      "region": "europe",
+      "also_region": null,
+      "category": "water",
+      "agency": "Instytut Meteorologii i Gospodarki Wodnej (IMGW-PIB)"
+    },
+    {
+      "code": "PT",
+      "name_es": "Portugal",
+      "name_en": "Portugal",
+      "region": "europe",
+      "also_region": null,
+      "category": "fire",
+      "agency": "Instituto Português do Mar e da Atmosfera (IPMA)"
+    },
+    {
+      "code": "GB",
+      "name_es": "Reino Unido",
+      "name_en": "United Kingdom",
+      "region": "europe",
+      "also_region": null,
+      "category": "drought",
+      "agency": "Met Office"
+    },
+    {
+      "code": "CZ",
+      "name_es": "República Checa",
+      "name_en": "Czechia",
+      "region": "europe",
+      "also_region": null,
+      "category": "forest",
+      "agency": "Český hydrometeorologický ústav (ČHMÚ)"
+    },
+    {
+      "code": "RU",
+      "name_es": "Rusia",
+      "name_en": "Russia",
+      "region": "europe",
+      "also_region": "asia",
+      "category": "fire",
+      "agency": "Hydrometeorological Centre of Russia (Roshydromet)"
+    },
+    {
+      "code": "SE",
+      "name_es": "Suecia",
+      "name_en": "Sweden",
+      "region": "europe",
+      "also_region": null,
+      "category": "fire",
+      "agency": "Sveriges meteorologiska och hydrologiska institut (SMHI)"
+    },
+    {
+      "code": "CH",
+      "name_es": "Suiza",
+      "name_en": "Switzerland",
+      "region": "europe",
+      "also_region": null,
+      "category": "ice",
+      "agency": "MeteoSchweiz (MeteoSwiss)"
+    },
+    {
+      "code": "TR",
+      "name_es": "Turquía",
+      "name_en": "Turkey",
+      "region": "europe",
+      "also_region": "asia",
+      "category": "water",
+      "agency": "Meteoroloji Genel Müdürlüğü (MGM)"
+    },
+    {
+      "code": "UA",
+      "name_es": "Ucrania",
+      "name_en": "Ukraine",
+      "region": "europe",
+      "also_region": null,
+      "category": "water",
+      "agency": "Ukrainian Hydrometeorological Center"
+    },
+    {
+      "code": "CA",
+      "name_es": "Canadá",
+      "name_en": "Canada",
+      "region": "north",
+      "also_region": null,
+      "category": "fire",
+      "agency": "Environment and Climate Change Canada (ECCC)"
+    },
+    {
+      "code": "US",
+      "name_es": "Estados Unidos",
+      "name_en": "United States",
+      "region": "north",
+      "also_region": null,
+      "category": "water",
+      "agency": "National Weather Service (NOAA)"
+    },
+    {
+      "code": "MX",
+      "name_es": "México",
+      "name_en": "Mexico",
+      "region": "north",
+      "also_region": null,
+      "category": "water",
+      "agency": "Servicio Meteorológico Nacional (SMN–CONAGUA)"
+    },
+    {
+      "code": "BZ",
+      "name_es": "Belice",
+      "name_en": "Belize",
+      "region": "central",
+      "also_region": null,
+      "category": "coast",
+      "agency": "National Meteorological Service of Belize"
+    },
+    {
+      "code": "CR",
+      "name_es": "Costa Rica",
+      "name_en": "Costa Rica",
+      "region": "central",
+      "also_region": null,
+      "category": "forest",
+      "agency": "Instituto Meteorológico Nacional (IMN)"
+    },
+    {
+      "code": "SV",
+      "name_es": "El Salvador",
+      "name_en": "El Salvador",
+      "region": "central",
+      "also_region": null,
+      "category": "drought",
+      "agency": "Ministerio de Medio Ambiente y Recursos Naturales (MARN)"
+    },
+    {
+      "code": "GT",
+      "name_es": "Guatemala",
+      "name_en": "Guatemala",
+      "region": "central",
+      "also_region": null,
+      "category": "drought",
+      "agency": "INSIVUMEH"
+    },
+    {
+      "code": "HN",
+      "name_es": "Honduras",
+      "name_en": "Honduras",
+      "region": "central",
+      "also_region": null,
+      "category": "flood",
+      "agency": "CENAOS – COPECO"
+    },
+    {
+      "code": "NI",
+      "name_es": "Nicaragua",
+      "name_en": "Nicaragua",
+      "region": "central",
+      "also_region": null,
+      "category": "forest",
+      "agency": "INETER"
+    },
+    {
+      "code": "PA",
+      "name_es": "Panamá",
+      "name_en": "Panama",
+      "region": "central",
+      "also_region": null,
+      "category": "water",
+      "agency": "Instituto de Meteorología e Hidrología de Panamá (IMHPA)"
+    },
+    {
+      "code": "AG",
+      "name_es": "Antigua y Barbuda",
+      "name_en": "Antigua and Barbuda",
+      "region": "caribbean",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Antigua and Barbuda Meteorological Service"
+    },
+    {
+      "code": "BS",
+      "name_es": "Bahamas",
+      "name_en": "Bahamas",
+      "region": "caribbean",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Department of Meteorology (Bahamas)"
+    },
+    {
+      "code": "BB",
+      "name_es": "Barbados",
+      "name_en": "Barbados",
+      "region": "caribbean",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Barbados Meteorological Services"
+    },
+    {
+      "code": "CU",
+      "name_es": "Cuba",
+      "name_en": "Cuba",
+      "region": "caribbean",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Instituto de Meteorología (INSMET)"
+    },
+    {
+      "code": "DM",
+      "name_es": "Dominica",
+      "name_en": "Dominica",
+      "region": "caribbean",
+      "also_region": null,
+      "category": "forest",
+      "agency": "Dominica Meteorological Service"
+    },
+    {
+      "code": "GD",
+      "name_es": "Granada",
+      "name_en": "Grenada",
+      "region": "caribbean",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Grenada Meteorological Service (MBIA)"
+    },
+    {
+      "code": "HT",
+      "name_es": "Haití",
+      "name_en": "Haiti",
+      "region": "caribbean",
+      "also_region": null,
+      "category": "forest",
+      "agency": "Unité Hydrométéorologique d’Haïti (UHM)"
+    },
+    {
+      "code": "JM",
+      "name_es": "Jamaica",
+      "name_en": "Jamaica",
+      "region": "caribbean",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Meteorological Service of Jamaica"
+    },
+    {
+      "code": "DO",
+      "name_es": "República Dominicana",
+      "name_en": "Dominican Republic",
+      "region": "caribbean",
+      "also_region": null,
+      "category": "water",
+      "agency": "Instituto Dominicano de Meteorología (INDOMET)"
+    },
+    {
+      "code": "KN",
+      "name_es": "San Cristóbal y Nieves",
+      "name_en": "Saint Kitts and Nevis",
+      "region": "caribbean",
+      "also_region": null,
+      "category": "coast",
+      "agency": "St. Kitts and Nevis Meteorological Service"
+    },
+    {
+      "code": "VC",
+      "name_es": "San Vicente y las Granadinas",
+      "name_en": "Saint Vincent and the Grenadines",
+      "region": "caribbean",
+      "also_region": null,
+      "category": "coast",
+      "agency": "SVG Meteorological Services"
+    },
+    {
+      "code": "LC",
+      "name_es": "Santa Lucía",
+      "name_en": "Saint Lucia",
+      "region": "caribbean",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Saint Lucia Meteorological Services"
+    },
+    {
+      "code": "TT",
+      "name_es": "Trinidad y Tobago",
+      "name_en": "Trinidad and Tobago",
+      "region": "caribbean",
+      "also_region": null,
+      "category": "flood",
+      "agency": "Trinidad and Tobago Meteorological Service"
+    },
+    {
+      "code": "AR",
+      "name_es": "Argentina",
+      "name_en": "Argentina",
+      "region": "south",
+      "also_region": null,
+      "category": "water",
+      "agency": "Servicio Meteorológico Nacional (SMN)"
+    },
+    {
+      "code": "BO",
+      "name_es": "Bolivia",
+      "name_en": "Bolivia",
+      "region": "south",
+      "also_region": null,
+      "category": "water",
+      "agency": "SENAMHI Bolivia"
+    },
+    {
+      "code": "BR",
+      "name_es": "Brasil",
+      "name_en": "Brazil",
+      "region": "south",
+      "also_region": null,
+      "category": "forest",
+      "agency": "Instituto Nacional de Meteorologia (INMET)"
+    },
+    {
+      "code": "CL",
+      "name_es": "Chile",
+      "name_en": "Chile",
+      "region": "south",
+      "also_region": null,
+      "category": "drought",
+      "agency": "Dirección Meteorológica de Chile"
+    },
+    {
+      "code": "CO",
+      "name_es": "Colombia",
+      "name_en": "Colombia",
+      "region": "south",
+      "also_region": null,
+      "category": "ice",
+      "agency": "IDEAM"
+    },
+    {
+      "code": "EC",
+      "name_es": "Ecuador",
+      "name_en": "Ecuador",
+      "region": "south",
+      "also_region": null,
+      "category": "ice",
+      "agency": "INAMHI"
+    },
+    {
+      "code": "GY",
+      "name_es": "Guyana",
+      "name_en": "Guyana",
+      "region": "south",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Hydrometeorological Service of Guyana"
+    },
+    {
+      "code": "PY",
+      "name_es": "Paraguay",
+      "name_en": "Paraguay",
+      "region": "south",
+      "also_region": null,
+      "category": "water",
+      "agency": "Dirección de Meteorología e Hidrología (DMH)"
+    },
+    {
+      "code": "PE",
+      "name_es": "Perú",
+      "name_en": "Peru",
+      "region": "south",
+      "also_region": null,
+      "category": "ice",
+      "agency": "SENAMHI Perú"
+    },
+    {
+      "code": "SR",
+      "name_es": "Surinam",
+      "name_en": "Suriname",
+      "region": "south",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Meteorologische Dienst Suriname"
+    },
+    {
+      "code": "UY",
+      "name_es": "Uruguay",
+      "name_en": "Uruguay",
+      "region": "south",
+      "also_region": null,
+      "category": "drought",
+      "agency": "Instituto Uruguayo de Meteorología (INUMET)"
+    },
+    {
+      "code": "VE",
+      "name_es": "Venezuela",
+      "name_en": "Venezuela",
+      "region": "south",
+      "also_region": null,
+      "category": "ice",
+      "agency": "INAMEH"
+    },
+    {
+      "code": "SA",
+      "name_es": "Arabia Saudita",
+      "name_en": "Saudi Arabia",
+      "region": "asia",
+      "also_region": null,
+      "category": "water",
+      "agency": "National Center for Meteorology (NCM)"
+    },
+    {
+      "code": "CN",
+      "name_es": "China",
+      "name_en": "China",
+      "region": "asia",
+      "also_region": null,
+      "category": "forest",
+      "agency": "China Meteorological Administration (NMC)"
+    },
+    {
+      "code": "KP",
+      "name_es": "Corea del Norte",
+      "name_en": "North Korea",
+      "region": "asia",
+      "also_region": null,
+      "category": "forest",
+      "agency": "State Hydro-Meteorological Administration (SHMA)"
+    },
+    {
+      "code": "KR",
+      "name_es": "Corea del Sur",
+      "name_en": "South Korea",
+      "region": "asia",
+      "also_region": null,
+      "category": "flood",
+      "agency": "Korea Meteorological Administration (KMA)"
+    },
+    {
+      "code": "AE",
+      "name_es": "Emiratos Árabes Unidos",
+      "name_en": "United Arab Emirates",
+      "region": "asia",
+      "also_region": null,
+      "category": "flood",
+      "agency": "National Center of Meteorology (NCM)"
+    },
+    {
+      "code": "PH",
+      "name_es": "Filipinas",
+      "name_en": "Philippines",
+      "region": "asia",
+      "also_region": null,
+      "category": "coast",
+      "agency": "PAGASA"
+    },
+    {
+      "code": "IN",
+      "name_es": "India",
+      "name_en": "India",
+      "region": "asia",
+      "also_region": null,
+      "category": "water",
+      "agency": "India Meteorological Department (IMD)"
+    },
+    {
+      "code": "ID",
+      "name_es": "Indonesia",
+      "name_en": "Indonesia",
+      "region": "asia",
+      "also_region": null,
+      "category": "coast",
+      "agency": "BMKG"
+    },
+    {
+      "code": "IR",
+      "name_es": "Irán",
+      "name_en": "Iran",
+      "region": "asia",
+      "also_region": null,
+      "category": "water",
+      "agency": "IRIMO"
+    },
+    {
+      "code": "IL",
+      "name_es": "Israel",
+      "name_en": "Israel",
+      "region": "asia",
+      "also_region": null,
+      "category": "water",
+      "agency": "Israel Meteorological Service (IMS)"
+    },
+    {
+      "code": "JP",
+      "name_es": "Japón",
+      "name_en": "Japan",
+      "region": "asia",
+      "also_region": null,
+      "category": "drought",
+      "agency": "Japan Meteorological Agency (JMA)"
+    },
+    {
+      "code": "MY",
+      "name_es": "Malasia",
+      "name_en": "Malaysia",
+      "region": "asia",
+      "also_region": null,
+      "category": "forest",
+      "agency": "Malaysian Meteorological Department (MetMalaysia)"
+    },
+    {
+      "code": "PK",
+      "name_es": "Pakistán",
+      "name_en": "Pakistan",
+      "region": "asia",
+      "also_region": null,
+      "category": "flood",
+      "agency": "Pakistan Meteorological Department (PMD)"
+    },
+    {
+      "code": "SG",
+      "name_es": "Singapur",
+      "name_en": "Singapore",
+      "region": "asia",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Meteorological Service Singapore (MSS)"
+    },
+    {
+      "code": "TH",
+      "name_es": "Tailandia",
+      "name_en": "Thailand",
+      "region": "asia",
+      "also_region": null,
+      "category": "flood",
+      "agency": "Thai Meteorological Department (TMD)"
+    },
+    {
+      "code": "VN",
+      "name_es": "Vietnam",
+      "name_en": "Vietnam",
+      "region": "asia",
+      "also_region": null,
+      "category": "coast",
+      "agency": "National Center for Hydro-Meteorological Forecasting (NCHMF)"
+    },
+    {
+      "code": "AO",
+      "name_es": "Angola",
+      "name_en": "Angola",
+      "region": "africa",
+      "also_region": null,
+      "category": "drought",
+      "agency": "Instituto Nacional de Meteorologia e Geofísica (INAMET)"
+    },
+    {
+      "code": "DZ",
+      "name_es": "Argelia",
+      "name_en": "Algeria",
+      "region": "africa",
+      "also_region": null,
+      "category": "fire",
+      "agency": "Office National de la Météorologie (ONM)"
+    },
+    {
+      "code": "CM",
+      "name_es": "Camerún",
+      "name_en": "Cameroon",
+      "region": "africa",
+      "also_region": null,
+      "category": "water",
+      "agency": "Direction de la Météorologie Nationale"
+    },
+    {
+      "code": "CI",
+      "name_es": "Costa de Marfil",
+      "name_en": "Côte d'Ivoire",
+      "region": "africa",
+      "also_region": null,
+      "category": "forest",
+      "agency": "SODEXAM"
+    },
+    {
+      "code": "EG",
+      "name_es": "Egipto",
+      "name_en": "Egypt",
+      "region": "africa",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Egyptian Meteorological Authority (EMA)"
+    },
+    {
+      "code": "ET",
+      "name_es": "Etiopía",
+      "name_en": "Ethiopia",
+      "region": "africa",
+      "also_region": null,
+      "category": "drought",
+      "agency": "Ethiopian Meteorology Institute (EMI)"
+    },
+    {
+      "code": "GH",
+      "name_es": "Ghana",
+      "name_en": "Ghana",
+      "region": "africa",
+      "also_region": null,
+      "category": "forest",
+      "agency": "Ghana Meteorological Agency (GMet)"
+    },
+    {
+      "code": "KE",
+      "name_es": "Kenia",
+      "name_en": "Kenya",
+      "region": "africa",
+      "also_region": null,
+      "category": "water",
+      "agency": "Kenya Meteorological Department"
+    },
+    {
+      "code": "LY",
+      "name_es": "Libia",
+      "name_en": "Libya",
+      "region": "africa",
+      "also_region": null,
+      "category": "flood",
+      "agency": "Libyan National Meteorological Center (LNMC)"
+    },
+    {
+      "code": "MG",
+      "name_es": "Madagascar",
+      "name_en": "Madagascar",
+      "region": "africa",
+      "also_region": null,
+      "category": "forest",
+      "agency": "Direction Générale de la Météorologie"
+    },
+    {
+      "code": "MA",
+      "name_es": "Marruecos",
+      "name_en": "Morocco",
+      "region": "africa",
+      "also_region": null,
+      "category": "drought",
+      "agency": "Direction Générale de la Météorologie (Maroc Météo)"
+    },
+    {
+      "code": "MU",
+      "name_es": "Mauricio",
+      "name_en": "Mauritius",
+      "region": "africa",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Mauritius Meteorological Services"
+    },
+    {
+      "code": "MZ",
+      "name_es": "Mozambique",
+      "name_en": "Mozambique",
+      "region": "africa",
+      "also_region": null,
+      "category": "flood",
+      "agency": "Instituto Nacional de Meteorologia (INAM)"
+    },
+    {
+      "code": "NG",
+      "name_es": "Nigeria",
+      "name_en": "Nigeria",
+      "region": "africa",
+      "also_region": null,
+      "category": "flood",
+      "agency": "Nigerian Meteorological Agency (NiMet)"
+    },
+    {
+      "code": "CD",
+      "name_es": "República Democrática del Congo",
+      "name_en": "DR Congo",
+      "region": "africa",
+      "also_region": null,
+      "category": "forest",
+      "agency": "METTELSAT"
+    },
+    {
+      "code": "SN",
+      "name_es": "Senegal",
+      "name_en": "Senegal",
+      "region": "africa",
+      "also_region": null,
+      "category": "coast",
+      "agency": "ANACIM"
+    },
+    {
+      "code": "ZA",
+      "name_es": "Sudáfrica",
+      "name_en": "South Africa",
+      "region": "africa",
+      "also_region": null,
+      "category": "water",
+      "agency": "South African Weather Service (SAWS)"
+    },
+    {
+      "code": "SD",
+      "name_es": "Sudán",
+      "name_en": "Sudan",
+      "region": "africa",
+      "also_region": null,
+      "category": "flood",
+      "agency": "Sudan Meteorological Authority"
+    },
+    {
+      "code": "TZ",
+      "name_es": "Tanzania",
+      "name_en": "Tanzania",
+      "region": "africa",
+      "also_region": null,
+      "category": "ice",
+      "agency": "Tanzania Meteorological Authority (TMA)"
+    },
+    {
+      "code": "TN",
+      "name_es": "Túnez",
+      "name_en": "Tunisia",
+      "region": "africa",
+      "also_region": null,
+      "category": "drought",
+      "agency": "Institut National de la Météorologie (INM)"
+    },
+    {
+      "code": "UG",
+      "name_es": "Uganda",
+      "name_en": "Uganda",
+      "region": "africa",
+      "also_region": null,
+      "category": "ice",
+      "agency": "Uganda National Meteorological Authority (UNMA)"
+    },
+    {
+      "code": "ZM",
+      "name_es": "Zambia",
+      "name_en": "Zambia",
+      "region": "africa",
+      "also_region": null,
+      "category": "water",
+      "agency": "Zambia Meteorological Department"
+    },
+    {
+      "code": "ZW",
+      "name_es": "Zimbabue",
+      "name_en": "Zimbabwe",
+      "region": "africa",
+      "also_region": null,
+      "category": "drought",
+      "agency": "Meteorological Services Department"
+    },
+    {
+      "code": "AU",
+      "name_es": "Australia",
+      "name_en": "Australia",
+      "region": "oceania",
+      "also_region": null,
+      "category": "fire",
+      "agency": "Bureau of Meteorology (BoM)"
+    },
+    {
+      "code": "FJ",
+      "name_es": "Fiyi",
+      "name_en": "Fiji",
+      "region": "oceania",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Fiji Meteorological Service"
+    },
+    {
+      "code": "MH",
+      "name_es": "Islas Marshall",
+      "name_en": "Marshall Islands",
+      "region": "oceania",
+      "also_region": null,
+      "category": "coast",
+      "agency": "NOAA National Weather Service (Majuro)"
+    },
+    {
+      "code": "SB",
+      "name_es": "Islas Salomón",
+      "name_en": "Solomon Islands",
+      "region": "oceania",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Solomon Islands Meteorological Service"
+    },
+    {
+      "code": "KI",
+      "name_es": "Kiribati",
+      "name_en": "Kiribati",
+      "region": "oceania",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Kiribati Meteorological Service"
+    },
+    {
+      "code": "FM",
+      "name_es": "Micronesia",
+      "name_en": "Micronesia",
+      "region": "oceania",
+      "also_region": null,
+      "category": "coast",
+      "agency": "NOAA National Weather Service (FSM)"
+    },
+    {
+      "code": "NR",
+      "name_es": "Nauru",
+      "name_en": "Nauru",
+      "region": "oceania",
+      "also_region": null,
+      "category": "forest",
+      "agency": "Nauru Meteorological Service"
+    },
+    {
+      "code": "NZ",
+      "name_es": "Nueva Zelanda",
+      "name_en": "New Zealand",
+      "region": "oceania",
+      "also_region": null,
+      "category": "ice",
+      "agency": "MetService"
+    },
+    {
+      "code": "PW",
+      "name_es": "Palaos",
+      "name_en": "Palau",
+      "region": "oceania",
+      "also_region": null,
+      "category": "coast",
+      "agency": "NOAA National Weather Service (Palau)"
+    },
+    {
+      "code": "PG",
+      "name_es": "Papúa Nueva Guinea",
+      "name_en": "Papua New Guinea",
+      "region": "oceania",
+      "also_region": null,
+      "category": "forest",
+      "agency": "PNG National Weather Service"
+    },
+    {
+      "code": "WS",
+      "name_es": "Samoa",
+      "name_en": "Samoa",
+      "region": "oceania",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Ministry of Natural Resources and Environment (MNRE)"
+    },
+    {
+      "code": "TO",
+      "name_es": "Tonga",
+      "name_en": "Tonga",
+      "region": "oceania",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Tonga Meteorological Service"
+    },
+    {
+      "code": "TV",
+      "name_es": "Tuvalu",
+      "name_en": "Tuvalu",
+      "region": "oceania",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Tuvalu Meteorological Service"
+    },
+    {
+      "code": "VU",
+      "name_es": "Vanuatu",
+      "name_en": "Vanuatu",
+      "region": "oceania",
+      "also_region": null,
+      "category": "coast",
+      "agency": "Vanuatu Meteorology and Geo-Hazards Department (VMGD)"
+    }
+  ]
+}
