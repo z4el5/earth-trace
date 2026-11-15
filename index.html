@@ -852,6 +852,7 @@ pre,code{max-width:100%}
 .as-m.bot{align-self:flex-start; background:#124A2A; border:1px solid rgba(197,227,132,.2); border-bottom-left-radius:6px}
 .as-tag{display:inline-block; margin-top:8px; font-size:11px; font-weight:700; color:#0B3D1F; background:#4DB6AC; border-radius:6px; padding:1px 7px}
 .as-tag.loc{background:#B0C9A5}
+.as-why{display:block; margin-top:6px; font-size:11px; color:#F2A65A; opacity:.9}
 .as-link{display:block; margin-top:8px; color:#C5E384; font-weight:700; text-decoration:none}
 .as-typing i{display:inline-block; width:7px; height:7px; margin:0 2px; border-radius:50%; background:#4DB6AC; animation:asDot 1s infinite}
 .as-typing i:nth-child(2){animation-delay:.15s}.as-typing i:nth-child(3){animation-delay:.3s}
@@ -1945,14 +1946,20 @@ Task: ${question}`;
     const r=await SAMPLE(prompt,{cache:false,onText:onText?({text})=>onText(text):undefined}); return r.text;
   }
   if(!AI_ENDPOINT)throw new Error("no_ai");
-  const ctl=new AbortController(); const to=setTimeout(()=>ctl.abort(),25000);
-  try{
-    const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question,lang:LANG,context}),signal:ctl.signal});
-    const j=await r.json().catch(()=>({error:"bad_response_"+r.status}));
-    if(!r.ok||!j.answer){AI_LAST_ERR=(j.error||"error")+(j.detail?": "+j.detail:"");console.warn("EARTH//TRACE IA:",AI_LAST_ERR);throw new Error(AI_LAST_ERR);}
-    return j.answer;
-  }catch(e){AI_LAST_ERR=AI_LAST_ERR||e.message;console.warn("EARTH//TRACE IA:",e.message);throw e;}
-  finally{clearTimeout(to);}
+  AI_LAST_ERR="";
+  const body=JSON.stringify({question,lang:LANG,context});
+  for(let attempt=0;attempt<2;attempt++){
+    const ctl=new AbortController(); const to=setTimeout(()=>ctl.abort(),40000);
+    try{
+      const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body,signal:ctl.signal});
+      const j=await r.json().catch(()=>({error:"bad_response_"+r.status}));
+      if(r.ok&&j.answer)return j.answer;
+      AI_LAST_ERR=(j.error||"error")+(j.detail?": "+j.detail:"");console.warn("EARTH//TRACE IA:",AI_LAST_ERR,j.tried||"");
+      if(r.status===403||r.status===400||r.status===500)break;   // no sirve reintentar
+    }catch(e){AI_LAST_ERR=e.name==="AbortError"?"timeout":(e.message||"network");console.warn("EARTH//TRACE IA:",AI_LAST_ERR);}
+    finally{clearTimeout(to);}
+  }
+  throw new Error(AI_LAST_ERR||"ai");
 }
 /* botón «✨ … con IA» reutilizable en toda la plataforma */
 function aiButton(el,label,question,contextFn){
@@ -2181,7 +2188,7 @@ async function ask(q){
         countries:COUNTRIES.map(x=>`${x.i}=${x[LANG]}(${DATA[x.i].cat})`).join(", "),history:askHistory.slice(-3)};
       const ans=await aiCall(q,ctx);
       txt.textContent=ans; askHistory.push({q,a:ans.slice(0,400)}); finish("modeAI2"); return;
-    }catch(e){ showLocal(); by.innerHTML+=` <em class="aiwarn">· ${t("aiFallback")}</em>`; return; }
+    }catch(e){ showLocal(); by.innerHTML+=` <em class="aiwarn" title="${escapeHtml(AI_LAST_ERR)}">· ${t("aiFallback")} (${escapeHtml(AI_LAST_ERR.slice(0,90))})</em>`; return; }
   }
   if(!SAMPLE){showLocal();return;}
   if(askAbort)askAbort.abort(); askAbort=new AbortController();
@@ -3159,6 +3166,7 @@ async function assistantAsk(q){
   }catch(e){
     const r=localAnswer(q); wait.textContent=r.text;
     const tag=document.createElement("span");tag.className="as-tag loc";tag.textContent=t("modeLocal");wait.appendChild(document.createElement("br"));wait.appendChild(tag);
+    if(AI_LAST_ERR){const why=document.createElement("small");why.className="as-why";why.textContent=X("IA no disponible · ","AI unavailable · ")+AI_LAST_ERR.slice(0,140);wait.appendChild(why);}
   }
   if(cs[0]){const a=document.createElement("a");a.href="#explorer-"+cs[0].i.toLowerCase();a.className="as-link";a.textContent=`${flag(cs[0].i)} ${X("Ver ficha de","See profile of")} ${cs[0][LANG]} →`;a.onclick=()=>assistantToggle(false);wait.appendChild(a);}
   document.getElementById("asLog").scrollTop=1e9;
