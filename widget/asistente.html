@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asistente EARTH//TRACE</title>
+<style>
+:root{--bg:#06240F;--card:#0B3D1F;--card2:#124A2A;--ink:#F4F9E6;--muted:#B0C9A5;--lime:#C5E384;--aqua:#4DB6AC;--line:rgba(197,227,132,.22)}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:"Atkinson Hyperlegible","Segoe UI",system-ui,-apple-system,sans-serif;color:var(--ink);background:radial-gradient(500px 300px at 100% 0%,#0F5A33,transparent 70%),radial-gradient(400px 300px at 0% 100%,#0A4A4A,transparent 70%),var(--bg);display:flex;flex-direction:column;font-size:15px}
+header{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);background:rgba(6,36,15,.6)}
+.orb{width:34px;height:34px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 30%,#B2EBF2,#4DB6AC 35%,#006064 70%);box-shadow:0 0 18px rgba(77,182,172,.7)}
+header b{display:block;font-weight:800;font-size:16px;letter-spacing:-.01em}
+header b span{color:var(--lime)}
+header small{color:var(--muted);font-size:12px}
+header .sp{flex:1}
+header button{background:rgba(244,249,230,.08);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:5px 9px;font:inherit;font-size:12px;cursor:pointer}
+#log{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+.msg{max-width:92%;padding:10px 13px;border-radius:16px;line-height:1.45;white-space:pre-wrap;animation:in .35s cubic-bezier(.2,.9,.2,1)}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+.me{align-self:flex-end;background:var(--lime);color:#0B3D1F;border-bottom-right-radius:6px;font-weight:700}
+.bot{align-self:flex-start;background:var(--card2);border:1px solid var(--line);border-bottom-left-radius:6px}
+.bot .tag{display:inline-block;margin-top:8px;font-size:11px;font-weight:700;color:#0B3D1F;background:var(--aqua);border-radius:6px;padding:1px 7px}
+.bot .tag.loc{background:var(--muted)}
+.bot a{color:var(--lime);font-weight:700}
+.typing span{display:inline-block;width:7px;height:7px;margin:0 2px;border-radius:50%;background:var(--aqua);animation:b 1s infinite}
+.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-4px)}}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:0 14px 10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:none;background:rgba(244,249,230,.06);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:7px 11px;font:inherit;font-size:13px;cursor:pointer}
+.chips button:hover{border-color:var(--lime)}
+form{display:flex;gap:8px;padding:10px 12px 12px;border-top:1px solid var(--line);background:rgba(6,36,15,.7)}
+input{flex:1;min-width:0;background:rgba(244,249,230,.07);border:1px solid var(--line);color:var(--ink);border-radius:14px;padding:11px 13px;font:inherit;font-size:16px;outline:none}
+input:focus{border-color:var(--aqua);box-shadow:0 0 0 3px rgba(77,182,172,.25)}
+input::placeholder{color:#7FA27A}
+form button{background:var(--lime);color:#0B3D1F;border:none;border-radius:14px;padding:0 16px;font:inherit;font-weight:800;cursor:pointer}
+form button:disabled{opacity:.5}
+footer{font-size:11px;color:#7FA27A;text-align:center;padding:0 12px 10px;background:rgba(6,36,15,.7)}
+footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<header><div class="orb" aria-hidden="true"></div><div><b>EARTH<span>//</span>TRACE</b><small id="sub"></small></div><div class="sp"></div><button id="lang" type="button"></button></header>
+<div id="log" aria-live="polite"></div>
+<div class="chips" id="chips"></div>
+<form id="f"><input id="q" autocomplete="off"><button id="send" type="submit"></button></form>
+<footer id="foot"></footer>
+<script>
+const AI_ENDPOINT="https://earth-trace-ai.zaeltiburcio059.workers.dev";
+const BASE=new URL("../",location.href).href;
+const qs=new URLSearchParams(location.search);
+let LANG=qs.get("lang")==="en"?"en":"es";
+const T={es:{sub:"Asistente de ciencias de la Tierra",ph:"Pregunta sobre cualquier país o fenómeno…",send:"Enviar",lang:"EN",
+  hi:"¡Hola! Pregúntame cómo está cambiando cualquiera de los 110 países de EARTH//TRACE: hielo, sequía, incendios, inundaciones, costas, agua o bosques.",
+  ai:"Respuesta con IA",loc:"Datos de la plataforma",down:"La IA no respondió ahora mismo. Esto es lo que dice la plataforma:",
+  none:"No pude conectar con la IA. Intenta en un minuto o menciona un país (por ejemplo, «¿Qué pasa en Perú?»).",open:"Abrir ficha completa",
+  foot:'Datos: NASA y agencias oficiales · IA: Gemini · <a href="'+BASE+'" target="_blank" rel="noopener">Abrir EARTH//TRACE</a>',
+  chips:["¿Qué está cambiando en República Dominicana?","¿Qué países pierden hielo?","¿Por qué hay incendios en Grecia?","¿Qué es el NDVI?"],
+  q:"Pregunta de investigación",src:"Fuente oficial",ds:"Datos NASA"},
+ en:{sub:"Earth science assistant",ph:"Ask about any country or phenomenon…",send:"Send",lang:"ES",
+  hi:"Hi! Ask me how any of EARTH//TRACE’s 110 countries is changing: ice, drought, wildfires, floods, coasts, water or forests.",
+  ai:"AI answer",loc:"Platform data",down:"The AI didn’t respond right now. Here is what the platform says:",
+  none:"I couldn’t reach the AI. Try again in a minute or mention a country (for example, “What is happening in Peru?”).",open:"Open full profile",
+  foot:'Data: NASA and official agencies · AI: Gemini · <a href="'+BASE+'" target="_blank" rel="noopener">Open EARTH//TRACE</a>',
+  chips:["What is changing in the Dominican Republic?","Which countries are losing ice?","Why are there wildfires in Greece?","What is NDVI?"],
+  q:"Research question",src:"Official source",ds:"NASA data"}};
+const t=k=>T[LANG][k];
+const $=id=>document.getElementById(id);
+let PROFILES=null, history=[];
+fetch(BASE+"api/v1/profiles.json").then(r=>r.json()).then(j=>PROFILES=j.profiles).catch(()=>{});
+const norm=s=>" "+(s||"").toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu,"").replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ")+" ";
+function findCountries(q){if(!PROFILES)return[];const n=norm(q);
+  return Object.values(PROFILES).filter(p=>n.includes(norm(p.name_es))||n.includes(norm(p.name_en))).slice(0,3);}
+function add(cls,html,isText){const d=document.createElement("div");d.className="msg "+cls;if(isText)d.textContent=html;else d.innerHTML=html;$("log").appendChild(d);$("log").scrollTop=1e9;return d;}
+function localCard(p){const L=LANG;return `<b>${p["name_"+L]}</b>\n• ${p.phenomena[L].join("\n• ")}\n\n${t("q")}: ${p.research_question[L]}\n${t("src")}: ${p.official_source.agency}\n${t("ds")}: ${p.nasa_datasets.map(d=>d.name).join(", ")}\n\n<a href="${BASE}#explorer-${p.code.toLowerCase()}" target="_blank" rel="noopener">${t("open")} →</a>`;}
+async function ask(q){
+  q=q.trim(); if(!q)return; $("q").value=""; $("send").disabled=true;
+  add("me",q,true);
+  const wait=add("bot",'<span class="typing"><span></span><span></span><span></span></span>');
+  const found=findCountries(q);
+  const ctx={mentioned:found.map(p=>({country:p["name_"+LANG],agency:p.official_source.agency,phenomena:p.phenomena[LANG],research_question:p.research_question[LANG],nasa_datasets:p.nasa_datasets.map(d=>d.name)})),
+    platform:"EARTH//TRACE covers 110 countries; Greenland real NASA JPL GRACE trend about -268 Gt/yr (2003-2023, Mann-Kendall p<0.001).",history:history.slice(-3),channel:qs.get("src")||"widget"};
+  try{
+    const ctl=new AbortController(); const to=setTimeout(()=>ctl.abort(),25000);
+    const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q,lang:LANG,context:ctx}),signal:ctl.signal});
+    clearTimeout(to); const j=await r.json(); if(!r.ok||!j.answer)throw new Error(j.error||"ai");
+    wait.textContent=j.answer; const tag=document.createElement("span");tag.className="tag";tag.textContent=t("ai");wait.appendChild(document.createElement("br"));wait.appendChild(tag);
+    if(found[0]){const a=document.createElement("div");a.innerHTML=`<a href="${BASE}#explorer-${found[0].code.toLowerCase()}" target="_blank" rel="noopener">${t("open")} →</a>`;wait.appendChild(a);}
+    history.push({q,a:j.answer.slice(0,300)});
+  }catch(e){
+    wait.innerHTML=found.length?`${t("down")}\n\n${found.map(localCard).join("\n\n")}<br><span class="tag loc">${t("loc")}</span>`:t("none");
+  }
+  $("send").disabled=false; $("log").scrollTop=1e9;
+}
+function paint(){
+  document.documentElement.lang=LANG;
+  $("sub").textContent=t("sub"); $("q").placeholder=t("ph"); $("send").textContent=t("send"); $("lang").textContent=t("lang"); $("foot").innerHTML=t("foot");
+  $("chips").innerHTML=t("chips").map(c=>`<button type="button">${c}</button>`).join("");
+  $("chips").querySelectorAll("button").forEach(b=>b.onclick=()=>ask(b.textContent));
+}
+$("f").onsubmit=e=>{e.preventDefault();ask($("q").value);};
+$("lang").onclick=()=>{LANG=LANG==="es"?"en":"es";paint();};
+paint(); add("bot",t("hi"),true); setTimeout(()=>$("q").focus(),200);
+</script>
+</body>
+</html>
