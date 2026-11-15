@@ -552,7 +552,13 @@ dialog.welcome h2{font-size:clamp(26px,3vw,34px); font-weight:800; margin-bottom
 .wsteps li{display:grid; grid-template-columns:auto 1fr; gap:2px 12px; align-items:center; background:var(--surface2); border-radius:14px; padding:12px}
 .wsteps span{grid-row:span 2; font-size:28px} .wsteps b{font-family:var(--display)} .wsteps small{color:var(--muted); font-size:14px}
 @media (max-width:860px){ .guide{grid-template-columns:1fr} .toc{position:static} }
-
+.aibox{margin-top:12px}
+.aibtn{display:inline-flex; gap:8px; align-items:center; border:none; border-radius:12px; padding:10px 16px; font-weight:700; font-size:15px; background:linear-gradient(90deg,#2E7D32,#00897B); color:#F4F9E6}
+.aibtn:hover{filter:brightness(1.1)} .aibtn[disabled]{opacity:.6; cursor:wait}
+.aiout .aitxt{white-space:pre-wrap; background:var(--surface2); border-left:4px solid var(--teal); border-radius:0 12px 12px 0; padding:12px 14px; margin:10px 0 6px; font-size:16px}
+.aiout .aitxt.wait{color:var(--muted)} .aiout .by{font-size:13px; color:var(--muted); display:flex; gap:8px; flex-wrap:wrap}
+.aiout .by span{background:var(--surface2); border-radius:6px; padding:2px 8px; font-weight:700; color:var(--ink)}
+.aiwarn{font-style:normal; color:var(--warn)}
 footer{background:var(--hero-bg); color:var(--hero-muted); padding-block:34px; font-size:15px}
 footer .row{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap}
 footer b{color:var(--hero-ink); font-family:var(--display)}
@@ -642,7 +648,7 @@ const SOURCES={
 const T={
  es:{askT:"Pregúntale a EARTH//TRACE",askS:"Escribe cualquier pregunta sobre los cambios de un país europeo. La respuesta se basa en los datos de la plataforma.",
    askPh:"Ej.: ¿Qué está pasando con los glaciares de Suiza?",askBtn:"Preguntar",thinking:"Buscando en los datos…",
-   modeAI:"Respuesta con IA (Claude)",modeAI2:"Respuesta con IA",modeLocal:"Respuesta con los datos de la plataforma",verify:"Verifica siempre con las fuentes citadas.",
+   modeAI:"Respuesta con IA (Claude)",modeAI2:"Respuesta con IA",aiDown:"La IA no está disponible en este momento. Intenta de nuevo en un minuto.",aiFallback:"la IA no respondió, contestó el motor local",aiCountryB:"Explícame este país con IA",aiLabB:"Interpretar con IA",aiGameB:"Explicación del detective IA",aiCaseB:"Plan de investigación con IA",aiDxB:"Profundizar con IA",modeLocal:"Respuesta con los datos de la plataforma",verify:"Verifica siempre con las fuentes citadas.",
    seeProf:"Ver ficha de",locNoCountry:"Menciona un país europeo de la plataforma (por ejemplo, España o Noruega) o un fenómeno (glaciares, incendios, sequía…) y te respondo con sus datos.",
    cq1:"¿Quién mide el clima en {c}?",cq2:"¿Qué datos de la NASA sirven para estudiar {c}?",cq3:"¿Qué está cambiando en {c}?",
    gq1:"¿Qué países de Europa pierden hielo?",gq2:"¿Dónde hay incendios grandes en Europa?",gq3:"¿Qué está cambiando en Grecia?",
@@ -778,7 +784,7 @@ const T={
    wGo:"Empezar",wGuide:"Leer el manual"},
  en:{askT:"Ask EARTH//TRACE",askS:"Type any question about how a European country is changing. Answers are based on the platform’s data.",
    askPh:"E.g.: What is happening to Switzerland’s glaciers?",askBtn:"Ask",thinking:"Searching the data…",
-   modeAI:"AI answer (Claude)",modeAI2:"AI answer",modeLocal:"Answer from platform data",verify:"Always check the cited sources.",
+   modeAI:"AI answer (Claude)",modeAI2:"AI answer",aiDown:"AI isn’t available right now. Try again in a minute.",aiFallback:"AI didn’t respond, the local engine answered",aiCountryB:"Explain this country with AI",aiLabB:"Interpret with AI",aiGameB:"AI detective’s explanation",aiCaseB:"AI research plan",aiDxB:"Go deeper with AI",modeLocal:"Answer from platform data",verify:"Always check the cited sources.",
    seeProf:"See profile of",locNoCountry:"Mention a European country on the platform (for example, Spain or Norway) or a phenomenon (glaciers, wildfires, drought…) and I’ll answer with its data.",
    cq1:"Who measures the weather in {c}?",cq2:"Which NASA data help study {c}?",cq3:"What is changing in {c}?",
    gq1:"Which European countries are losing ice?",gq2:"Where are there big wildfires in Europe?",gq3:"What is changing in Greece?",
@@ -1511,6 +1517,7 @@ function drawProfile(){
     <h3>${t("exWhat")}</h3>
     <ul class="ph">${e.ph[LANG].map(x=>`<li>${x}</li>`).join("")}</ul>
     <div class="analogy"><b>💡 ${t("analogy")}</b>${cat.an[LANG]}</div>
+    <div id="aiCountry"></div>
     <h3>🛰 ${t("satT")}</h3>
     <div id="satbox"></div>
     <h3>🏛 ${t("exOff")}</h3>
@@ -1528,6 +1535,9 @@ function drawProfile(){
     </div>
     <div class="analogy" style="display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap"><span><b>📊 ${t("toLabT")}</b>${t("toLabS")}</span><a class="btn solid" href="#lab">${t("toLabB")}</a></div>`;
   document.getElementById("saveBtn").onclick=()=>{track("save",c.i);drawProfile();};
+  aiButton(document.getElementById("aiCountry"),t("aiCountryB"),
+    ()=>LANG==="es"?`Explícale a un estudiante qué está cambiando en ${c.es}, por qué ocurre, cómo afecta a las personas y qué buscar en las imágenes satelitales de la NASA para verlo.`:`Explain to a student what is changing in ${c.en}, why it happens, how it affects people and what to look for in NASA satellite imagery to see it.`,
+    ()=>({country:profileData(c)}));
   drawSat(c);
 }
 
@@ -1595,7 +1605,37 @@ function drawSat(c){
 /* ---------- Pregúntale a EARTH//TRACE ---------- */
 /* Dirección del asistente de IA (Cloudflare Worker). Vacío = motor local. */
 const AI_ENDPOINT="https://earth-trace-ai.zaeltiburcio059.workers.dev";
-let SAMPLE=null, DL=null;
+let SAMPLE=null, DL=null, AI_LAST_ERR="";
+const aiReady=()=>!!(SAMPLE||AI_ENDPOINT);
+async function aiCall(question,context,onText){
+  if(SAMPLE){
+    const prompt=`You are the research assistant of EARTH//TRACE (NASA Space Apps 2026). Answer in ${LANG==="es"?"Spanish":"English"} for students, max 170 words, no markdown headings; short paragraphs or "• " bullets.
+Use the platform data first, then well-established Earth-science knowledge marked as general knowledge. Never invent statistics. Include one analogy on its own line starting with "💡".
+Platform data: ${JSON.stringify(context).slice(0,12000)}
+Task: ${question}`;
+    const r=await SAMPLE(prompt,{cache:false,onText:onText?({text})=>onText(text):undefined}); return r.text;
+  }
+  if(!AI_ENDPOINT)throw new Error("no_ai");
+  const ctl=new AbortController(); const to=setTimeout(()=>ctl.abort(),25000);
+  try{
+    const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question,lang:LANG,context}),signal:ctl.signal});
+    const j=await r.json().catch(()=>({error:"bad_response_"+r.status}));
+    if(!r.ok||!j.answer){AI_LAST_ERR=(j.error||"error")+(j.detail?": "+j.detail:"");console.warn("EARTH//TRACE IA:",AI_LAST_ERR);throw new Error(AI_LAST_ERR);}
+    return j.answer;
+  }catch(e){AI_LAST_ERR=AI_LAST_ERR||e.message;console.warn("EARTH//TRACE IA:",e.message);throw e;}
+  finally{clearTimeout(to);}
+}
+/* botón «✨ … con IA» reutilizable en toda la plataforma */
+function aiButton(el,label,question,contextFn){
+  if(!el)return; if(!aiReady()){el.innerHTML="";return;}
+  el.innerHTML=`<div class="aibox"><button type="button" class="aibtn">✨ ${label}</button><div class="aiout" aria-live="polite"></div></div>`;
+  const btn=el.querySelector(".aibtn"), out=el.querySelector(".aiout");
+  btn.onclick=async()=>{btn.disabled=true;out.innerHTML=`<p class="aitxt wait">${t("thinking")}</p>`;
+    try{const txt=await aiCall(question(),contextFn(),s=>{out.innerHTML=`<p class="aitxt"></p>`;out.firstChild.textContent=s;});
+      out.innerHTML=`<p class="aitxt"></p><div class="by"><span>${t("modeAI2")}</span>${t("verify")}</div>`;out.firstChild.textContent=txt;track("ask");}
+    catch(e){out.innerHTML=`<p class="aitxt bad">${t("aiDown")}</p>`;}
+    btn.disabled=false;};
+}
 (async()=>{try{if(window.claude&&window.claude.use){[SAMPLE,DL]=await Promise.all([window.claude.use("sample"),window.claude.use("downloads")]);}}catch(e){}
   const by=document.getElementById("askMode"); if(by) by.textContent=t(SAMPLE?"modeAI":"modeLocal");})();
 let askHistory=[], askAbort=null;
@@ -1810,12 +1850,9 @@ async function ask(q){
       const ctx={selected:sc?profileData(sc):null,mentioned:findCountries(q).slice(0,3).map(profileData),
         real_nasa_series:{greenland_ice_mass_gt:{years:gKey(GCASES[2]).years,values:gKey(GCASES[2]).values},antarctica_ice_mass_gt:{years:WITNESS.antarctica.years,values:WITNESS.antarctica.values}},
         countries:COUNTRIES.map(x=>`${x.i}=${x[LANG]}(${DATA[x.i].cat})`).join(", "),history:askHistory.slice(-3)};
-      const ctl=new AbortController(); const to=setTimeout(()=>ctl.abort(),20000);
-      const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q,lang:LANG,context:ctx}),signal:ctl.signal});
-      clearTimeout(to);
-      const j=await r.json(); if(!r.ok||!j.answer)throw new Error(j.error||"ai");
-      txt.textContent=j.answer; askHistory.push({q,a:j.answer.slice(0,400)}); finish("modeAI2"); return;
-    }catch(e){ /* sin conexión o límite alcanzado: responde el motor local */ }
+      const ans=await aiCall(q,ctx);
+      txt.textContent=ans; askHistory.push({q,a:ans.slice(0,400)}); finish("modeAI2"); return;
+    }catch(e){ showLocal(); by.innerHTML+=` <em class="aiwarn">· ${t("aiFallback")}</em>`; return; }
   }
   if(!SAMPLE){showLocal();return;}
   if(askAbort)askAbort.abort(); askAbort=new AbortController();
@@ -2197,9 +2234,12 @@ function renderGame(){
       P.querySelectorAll("[data-gs]").forEach(b=>b.onclick=()=>{G2.guess=b.dataset.gs;if((G2.guess==="real")===(res.p<.05))addXP(10,t("goodEye"));renderGame();});}
     else{const ok=(G2.guess==="real")===(res.p<.05);
       P.innerHTML=`<h2>${PH[3][0]}</h2><div class="feedback ${ok?"good":"bad"}">${ok?t("rightGuess"):t("wrongGuess")}</div><div class="chart" id="gch"></div>${statsHTML(res,key.unit)}
-        <div class="nav" style="justify-content:flex-start"><button class="mini-btn" id="snd">♪ ${t("listen")}</button></div>${nav(t("closeCase"))}`;
+        <div class="nav" style="justify-content:flex-start"><button class="mini-btn" id="snd">♪ ${t("listen")}</button></div><div id="aiGame"></div>${nav(t("closeCase"))}`;
       chartRef=lineChart(document.getElementById("gch"),{years:key.years,values:key.values,unit:key.unit,trend:res,cursor:true});
-      document.getElementById("snd").onclick=()=>sonify(key.values); if(tm._upd)tm._upd(); bind();}
+      document.getElementById("snd").onclick=()=>sonify(key.values); if(tm._upd)tm._upd(); bind();
+      aiButton(document.getElementById("aiGame"),t("aiGameB"),
+        ()=>LANG==="es"?`Eres un detective científico. Explica en lenguaje sencillo qué descubrimos en este caso, por qué ocurre y qué significa para las personas que viven allí.`:`You are a science detective. Explain in plain language what we discovered in this case, why it happens and what it means for the people who live there.`,
+        ()=>({case:c.title[LANG],place:c.where[LANG],variable:key.name[LANG],unit:key.unit,source:key.src,real_data:!!key.real,years:[key.years[0],key.years.at(-1)],sen_slope_per_year:+res.slope.toFixed(2),total_change:+res.total.toFixed(1),p_value:+res.p.toFixed(5),verdict:t("v_"+res.level)}));}
   } else {
     if(!ST.cases.includes(c.id)){ST.cases.push(c.id);addXP(50,`${t("caseSolved")}: ${c.title[LANG]}`);checkProgress();}
     const w=witnessOf(c);
@@ -2298,7 +2338,7 @@ function labRun(){
     <div class="labres${rB?" two":""}">
       ${[["A",A,rA],["B",B,rB]].filter(x=>x[2]).map(([k,s,r])=>`<div class="labcard"><div class="slot-h"><b>${escapeHtml(s.name)}</b><span class="dir ${r.dir}">${t(r.dir)}</span></div>
         <div class="chart" id="lc${k}"></div>${statsHTML(r,s.unit)}
-        <div class="linkrow" style="margin-top:10px"><button class="mini-btn" data-snd="${k}">♪ ${t("listen")}</button><button class="mini-btn" data-save="${k}">📁 ${t("saveCase")}</button><button class="mini-btn" data-csv="${k}">⬇ CSV</button></div></div>`).join("")}
+        <div class="linkrow" style="margin-top:10px"><button class="mini-btn" data-snd="${k}">♪ ${t("listen")}</button><button class="mini-btn" data-save="${k}">📁 ${t("saveCase")}</button><button class="mini-btn" data-csv="${k}">⬇ CSV</button></div><div id="aiLab${k}"></div></div>`).join("")}
     </div>
     ${rB?`<div class="alert"><b>${rA.dir!==rB.dir&&rA.p<.05&&rB.p<.05?"⚠ "+t("contra"):rA.dir!==rB.dir?"↕ "+t("oppNS"):"⇉ "+t("same")}</b>${rA.dir!==rB.dir&&rA.p<.05&&rB.p<.05?t("contraT"):rA.dir!==rB.dir?t("oppNST"):t("sameT")}</div>`:""}
     <div class="analogy"><b>💡 ${t("analogy")}</b>${t("anMK")} ${t("anSen")}</div>
@@ -2313,6 +2353,9 @@ function labRun(){
   out.querySelectorAll("[data-save]").forEach(b=>b.onclick=()=>{const k=b.dataset.save,s=k==="A"?A:B,r=k==="A"?rA:rB;
     ST.labs.unshift({id:"lab"+Date.now(),name:s.name,unit:s.unit,src:s.src,demo:!!s.demo,years:s.years,values:s.values,anomaly:!!s.anomaly,date:new Date().toISOString().slice(0,10)});
     ST.labs=ST.labs.slice(0,20); addXP(20,t("labSaved")); checkProgress(); b.disabled=true; b.textContent="✓ "+t("savedCase");});
+  [["A",A,rA],["B",B,rB]].filter(x=>x[2]).forEach(([k,s,r])=>aiButton(document.getElementById("aiLab"+k),t("aiLabB"),
+    ()=>LANG==="es"?`Interpreta este resultado para un estudiante: qué significa la tendencia, si es confiable y qué limitaciones tiene. Sugiere una posible explicación física, marcada como hipótesis.`:`Interpret this result for a student: what the trend means, whether it is reliable and what its limitations are. Suggest a possible physical explanation, marked as a hypothesis.`,
+    ()=>({series:s.name,unit:s.unit,source:s.src,illustrative:!!s.demo,period:[s.years[0],s.years.at(-1)],n:r.n,sen_slope_per_year:+r.slope.toFixed(4),total_change:+r.total.toFixed(3),relative_change_pct:r.pct==null?null:+r.pct.toFixed(1),mann_kendall_Z:+r.Z.toFixed(3),p_value:+r.p.toFixed(5),verdict:t("v_"+r.level),compared_with:rB&&k==="A"?{name:B.name,direction:rB.dir,p:+rB.p.toFixed(5)}:null})));
   if(!ST.labRuns){ST.labRuns=1;addXP(15,t("firstLab"));checkProgress();}
 }
 
@@ -2356,8 +2399,11 @@ function cfView(){
     V.innerHTML=`<div class="dossier"><span class="stamp open">${t("openCase")}</span><small>${CONT[c.c][LANG]}</small><h2>${flag(c.i)} ${c[LANG]}</h2>
       <div class="rq"><small>🎯 ${t("exQ")}</small>${e.q[LANG]}</div><ul class="ph">${e.ph[LANG].map(x=>`<li>${x}</li>`).join("")}</ul>
       <dl><dt>${t("exOff")}</dt><dd>${e.inst}</dd><dt>${t("exNasa")}</dt><dd>${e.nasa.map(k=>NASA[k].n).join(" · ")}</dd></dl>
-      <div class="linkrow"><a class="btn lime" href="#explorer-${c.i.toLowerCase()}">${t("toExplorer")}</a><button class="mini-btn" id="cfMD">⬇ .md</button></div></div>`;
-    document.getElementById("cfMD").onclick=()=>saveFile(`earthtrace-${c.i}.md`,dossierMD(c),"text/markdown");}
+      <div id="aiCase"></div><div class="linkrow"><a class="btn lime" href="#explorer-${c.i.toLowerCase()}">${t("toExplorer")}</a><button class="mini-btn" id="cfMD">⬇ .md</button></div></div>`;
+    document.getElementById("cfMD").onclick=()=>saveFile(`earthtrace-${c.i}.md`,dossierMD(c),"text/markdown");
+    aiButton(document.getElementById("aiCase"),t("aiCaseB"),
+      ()=>LANG==="es"?`Propón un plan de investigación de 3 pasos para responder la pregunta de este país con datos de la NASA, y qué resultado indicaría un cambio real.`:`Propose a 3-step research plan to answer this country’s question with NASA data, and what result would indicate a real change.`,
+      ()=>({country:profileData(c)}));}
 }
 
 /* =========================================================
@@ -2375,7 +2421,10 @@ function renderDiscovery(){
   ({lake:dxLake,grace:dxGrace,ndvi:dxNdvi,noise:dxNoise})[DX](document.getElementById("dxw"));
 }
 function dxFrame(el,key,body){el.innerHTML=`<div class="dx"><div class="dx-txt"><h2>${t("dxq_"+key)}</h2><p>${t("dxi_"+key)}</p>
-  <div class="analogy"><b>💡 ${t("analogy")}</b>${t("dxa_"+key)}</div><div id="dxx"></div></div><div class="dx-play">${body}</div></div>`;}
+  <div class="analogy"><b>💡 ${t("analogy")}</b>${t("dxa_"+key)}</div><div id="dxx"></div><div id="aiDx"></div></div><div class="dx-play">${body}</div></div>`;
+  aiButton(document.getElementById("aiDx"),t("aiDxB"),
+    ()=>LANG==="es"?`Explica con más profundidad, para un estudiante de secundaria, este tema: «${t("dxq_"+key)}». Da un ejemplo real de un lugar del mundo.`:`Explain in more depth, for a high-school student, this topic: “${t("dxq_"+key)}”. Give one real example from somewhere in the world.`,
+    ()=>({topic:t("dxq_"+key),intro:t("dxi_"+key),analogy:t("dxa_"+key)}));}
 function dxLake(el){
   dxFrame(el,"lake",`<svg id="lk" viewBox="0 0 400 260" role="img" aria-label="${t("dx_lake")}"></svg>
     <label class="lbl2">🌧 ${t("lkIn")} <b id="vIn"></b></label><input type="range" id="sIn" min="0" max="100" value="50">
