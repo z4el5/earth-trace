@@ -1594,7 +1594,7 @@ function drawSat(c){
 
 /* ---------- Pregúntale a EARTH//TRACE ---------- */
 /* Dirección del asistente de IA (Cloudflare Worker). Vacío = motor local. */
-const AI_ENDPOINT="";
+const AI_ENDPOINT="https://earth-trace-ai.zaeltiburcio059.workers.dev";
 let SAMPLE=null, DL=null;
 (async()=>{try{if(window.claude&&window.claude.use){[SAMPLE,DL]=await Promise.all([window.claude.use("sample"),window.claude.use("downloads")]);}}catch(e){}
   const by=document.getElementById("askMode"); if(by) by.textContent=t(SAMPLE?"modeAI":"modeLocal");})();
