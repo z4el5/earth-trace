@@ -1,6 +1,8 @@
 # EARTH//TRACE — The Planet Leaves Evidence
 
-**NASA Space Apps Challenge 2026 · Desafío de Ciencias de la Tierra · Santiago, República Dominicana**
+**NASA Space Apps Challenge 2026 · Desafío de Ciencias de la Tierra · Santiago, República Dominicana · Equipo Earth Explorer 67**
+
+🌍 Plataforma: https://z4el5.github.io/earth-trace/
 
 EARTH//TRACE es una plataforma web gamificada para investigar cómo cambia la Tierra en 110 países: **qué cambia, dónde, cuánto y si es estadísticamente significativo**, con datos de satélites de la NASA y fuentes oficiales de cada país.
 
@@ -14,6 +16,7 @@ EARTH//TRACE es una plataforma web gamificada para investigar cómo cambia la Ti
 | `skill/earth-trace/` | **Skill** para asistentes de IA (formato Agent Skills): instrucciones + `scripts/tendencia.py` (Mann-Kendall y pendiente de Sen). |
 | `python/procesar_datos.py` | Descarga datos de la NASA con `earthaccess` y calcula tendencias. |
 | `data/fuentes_por_pais.csv` | Las 110 fuentes oficiales investigadas por el equipo. |
+| `docs/USER_GUIDE.md` · `docs/MANUAL_USUARIO.md` | Manual de usuario en inglés y español (también dentro de la plataforma, sección Guide). |
 | `docs/REVISION_FUENTES.md` | Enlaces con observaciones que el equipo debe confirmar. |
 | `prototipos/juego-v1.html` | Primer prototipo del juego (ya integrado en la sección Game). |
 
