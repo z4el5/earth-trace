@@ -690,7 +690,7 @@ const T={
    ,exRole:"Institución oficial del país. Sus mediciones en tierra sirven para comparar y validar lo que miden los satélites."
    ,zone:"Zona de exploración",passport:"Pasaporte",analogy:"Analogía",stampTxt:"Sellado",stamped:"Sellado en tu pasaporte",
    noSrc:"Fuente oficial pendiente",savedB:"En tu base",saveB:"Guardar en mi base",gq4:"¿Qué pasa con el sargazo en el Caribe?",
-   gq1:"¿Qué países pierden hielo?",gq2:"¿Dónde hay incendios grandes?",gq3:"¿Qué está cambiando en República Dominicana?",
+   gq1:"¿Qué países pierden hielo?",followT:"Sigue preguntando:",gq2:"¿Dónde hay incendios grandes?",gq3:"¿Qué está cambiando en República Dominicana?",
    askS:"Escribe cualquier pregunta sobre los cambios de un país o un fenómeno. La respuesta usa los datos de la plataforma e incluye una analogía.",
    askPh:"Ej.: ¿Qué está pasando con el Lago Enriquillo?",
    locNoCountry:"Menciona un país de la plataforma (por ejemplo, Perú o Kenia) o un fenómeno (glaciares, incendios, sequía, sargazo…) y te respondo con sus datos.",
@@ -826,7 +826,7 @@ const T={
    ,exRole:"The country’s official agency. Its ground measurements help compare and validate what satellites measure."
    ,zone:"Exploration zone",passport:"Passport",analogy:"Analogy",stampTxt:"Stamped",stamped:"Stamped in your passport",
    noSrc:"Official source pending",savedB:"In your base",saveB:"Save to my base",gq4:"What is happening with sargassum in the Caribbean?",
-   gq1:"Which countries are losing ice?",gq2:"Where are there big wildfires?",gq3:"What is changing in the Dominican Republic?",
+   gq1:"Which countries are losing ice?",followT:"Keep asking:",gq2:"Where are there big wildfires?",gq3:"What is changing in the Dominican Republic?",
    askS:"Type any question about how a country or phenomenon is changing. Answers use the platform’s data and include an analogy.",
    askPh:"E.g.: What is happening to Lake Enriquillo?",
    locNoCountry:"Mention a platform country (for example, Peru or Kenya) or a phenomenon (glaciers, wildfires, drought, sargassum…) and I’ll answer with its data.",
@@ -1597,50 +1597,186 @@ let SAMPLE=null, DL=null;
 (async()=>{try{if(window.claude&&window.claude.use){[SAMPLE,DL]=await Promise.all([window.claude.use("sample"),window.claude.use("downloads")]);}}catch(e){}
   const by=document.getElementById("askMode"); if(by) by.textContent=t(SAMPLE?"modeAI":"modeLocal");})();
 let askHistory=[], askAbort=null;
-const ALIAS={NL:["holanda","holland"],GB:["inglaterra","england","gran bretana","britain","escocia","scotland"],CZ:["chequia","czech"],TR:["turkiye"],
-  US:["ee.uu","eeuu","usa","estados unidos","united states","america del norte"],DO:["rd","dominicana","dominican"],KR:["corea del sur","south korea"],KP:["corea del norte","north korea"],
-  CD:["congo","rdc","drc"],AE:["emiratos","uae","dubai","dubái"],GB2:[],CI:["ivory coast","cote d","costa de marfil"],KN:["san cristobal","saint kitts","st kitts"],VC:["san vicente","saint vincent"],LC:["santa lucia","saint lucia"]};
-function findCountry(q){
-  const n=" "+norm(q).replace(/[¿?¡!.,;:]/g," ")+" ";
-  const byName=COUNTRIES.filter(c=>n.includes(" "+norm(c.es)+" ")||n.includes(" "+norm(c.en)+" ")).sort((a,b)=>b.es.length-a.es.length)[0];
-  if(byName)return byName;
-  for(const [i,ws] of Object.entries(ALIAS)) if(ws.some(w=>n.includes(" "+w)))return COUNTRIES.find(c=>c.i===i)||null;
-  return null;
+/* =========================================================
+   MOTOR DE RESPUESTAS LOCAL · entiende preguntas en español
+   e inglés y responde solo con los datos de la plataforma
+   ========================================================= */
+const ALIAS={NL:["holanda","holland","neerlandes","dutch"],GB:["inglaterra","england","gran bretana","britain","escocia","scotland","uk","britanico","british","londres"],
+  CZ:["chequia","czech","checo"],TR:["turkiye","turco","turkish"],US:["ee uu","eeuu","usa","estados unidos","united states","estadounidense","norteamericano","american","america"],
+  DO:["rd","dominicana","dominican","dominicano","quisqueya","santo domingo","enriquillo"],KR:["corea del sur","south korea","surcoreano","seul","seoul"],KP:["corea del norte","north korea","norcoreano"],
+  CD:["congo","rdc","drc","congoleño","congoleno"],AE:["emiratos","uae","dubai","emirati"],CI:["ivory coast","cote d ivoire","costa de marfil","marfileño"],
+  KN:["san cristobal","saint kitts","st kitts","nieves","nevis"],VC:["san vicente","saint vincent","granadinas"],LC:["santa lucia","saint lucia"],AG:["antigua","barbuda"],TT:["trinidad","tobago"],
+  MX:["mexicano","mexican","ciudad de mexico"],ES:["espanol","spanish","españa"],FR:["frances","french","paris"],DE:["aleman","german"],IT:["italiano","italian"],PT:["portugues","portuguese"],
+  BR:["brasileño","brasileno","brazilian","amazonia","amazon"],AR:["argentino","argentinian"],CL:["chileno","chilean"],PE:["peruano","peruvian"],CO:["colombiano","colombian","bogota"],
+  VE:["venezolano","venezuelan"],CU:["cubano","cuban"],HT:["haitiano","haitian"],JM:["jamaicano","jamaican"],CA:["canadiense","canadian"],JP:["japones","japanese"],CN:["chino","chinese"],
+  IN:["indio","hindu","indian"],KE:["keniano","kenyan"],EG:["egipcio","egyptian","nilo","nile"],AU:["australiano","australian"],NZ:["neozelandes","new zealander","kiwi"],RU:["ruso","russian","siberia"],
+  CH:["suizo","swiss","aletsch"],IS:["islandes","icelandic"],NO:["noruego","norwegian","svalbard"],SE:["sueco","swedish"],FI:["finlandes","finnish"],GR:["griego","greek"],UA:["ucraniano","ukrainian","kajovka","kakhovka"],
+  PA:["panameño","panameno","canal de panama","panama canal"],CR:["costarricense","tico"],GT:["guatemalteco"],HN:["hondureño","hondureno"],SV:["salvadoreño","salvadoreno"],NI:["nicaraguense"],BZ:["beliceño","beliceno"],
+  BO:["boliviano","poopo"],EC:["ecuatoriano","chimborazo"],UY:["uruguayo","montevideo"],PY:["paraguayo"],IL:["israeli","mar muerto","dead sea"],IR:["irani","urmia"],ID:["indonesio","yakarta","jakarta"],
+  PH:["filipino"],VN:["vietnamita","mekong"],TH:["tailandes","thai","bangkok"],PK:["pakistani"],SA:["saudi","saudita"],ZA:["sudafricano","ciudad del cabo","cape town"],NG:["nigeriano"],
+  MA:["marroqui","moroccan"],DZ:["argelino","algerian"],TZ:["tanzano","kilimanjaro"],UG:["ugandes","rwenzori"],ZM:["zambiano","kariba"],ZW:["zimbabuense"],TV:["tuvaluano","funafuti"],KI:["tarawa"],TO:["tongano","hunga tonga"]};
+const SPECIAL={greenland:{w:["groenlandia","greenland"],es:"Groenlandia",en:"Greenland"},antarctica:{w:["antartida","antartica","antarctica","antarctic"],es:"Antártida",en:"Antarctica"},aral:{w:["mar de aral","aral sea","aral"],es:"Mar de Aral",en:"Aral Sea"}};
+const REGWORDS={europe:["europa","europe","europeo","european"],north:["norteamerica","america del norte","north america"],central:["centroamerica","america central","central america","centroamericano"],
+  caribbean:["caribe","caribbean","caribeño","antillas"],south:["sudamerica","suramerica","america del sur","south america","latinoamerica"],asia:["asia","asiatico","asian","oriente medio","middle east"],
+  africa:["africa","africano","african","sahel"],oceania:["oceania","pacifico","pacific","polinesia","melanesia","micronesia region"]};
+const CATWORDS={ice:["glaciar","hielo","nieve","deshielo","permafrost","glacier","glaciers","ice","snow","melt","melting"],drought:["sequia","sequias","calor","ola de calor","drought","droughts","heat","heatwave","seco","dry","temperatura","temperature"],
+  fire:["incendio","incendios","fuego","quema","wildfire","wildfires","fire","fires","burn","humo","smoke"],flood:["inundacion","inundaciones","flood","floods","flooding","lluvia","lluvias","rain","huracan","huracanes","ciclon","tifon","hurricane","hurricanes","cyclone","cyclones","typhoon","tormenta","storm","storms","monzon"],
+  coast:["costa","costas","nivel del mar","coast","coasts","sea level","coral","corals","playa","playas","beach","beaches","erosion","isla","islas","island","islands","sargazo","sargassum","marejada"],water:["lago","lagos","rio","rios","embalse","embalses","presa","lake","lakes","river","rivers","reservoir","reservoirs","dam","agua subterranea","groundwater","acuifero","aquifer","agua","water"],
+  forest:["bosque","bosques","forest","forests","vegetacion","vegetation","deforest","selva","rainforest","arbol","arboles","tree","trees","verde","green","mineria","mining"]};
+const CAUSES={
+  ice:{es:"El hielo se pierde cuando el deshielo de verano supera a la nieve que cae en invierno. El aire y el océano más cálidos aceleran ese desbalance.",en:"Ice is lost when summer melt exceeds winter snowfall. Warmer air and ocean speed up that imbalance."},
+  drought:{es:"Menos lluvia y más calor secan el suelo: el agua se evapora más rápido de lo que se repone, y los embalses bajan.",en:"Less rain and more heat dry the soil: water evaporates faster than it is replaced, and reservoirs drop."},
+  fire:{es:"El calor y la sequía secan la vegetación, que se convierte en combustible; basta una chispa natural o humana para que el fuego se extienda.",en:"Heat and drought dry out vegetation into fuel; one natural or human spark is enough for fire to spread."},
+  flood:{es:"Las lluvias muy intensas en poco tiempo, los huracanes y los suelos ya saturados hacen que ríos y calles no puedan desaguar.",en:"Very intense rain in a short time, hurricanes and already-saturated soils mean rivers and streets can’t drain."},
+  coast:{es:"El mar sube porque el agua se expande al calentarse y porque se derrite el hielo terrestre; las tormentas y la erosión hacen el resto.",en:"Seas rise because warming water expands and land ice melts; storms and erosion do the rest."},
+  water:{es:"Un lago o río cambia cuando cambia su balance: entradas (lluvia, ríos) frente a salidas (evaporación, riego, desvíos, bombeo de agua subterránea).",en:"A lake or river changes when its balance changes: inflows (rain, rivers) versus outflows (evaporation, irrigation, diversions, groundwater pumping)."},
+  forest:{es:"La vegetación disminuye por deforestación, agricultura, minería, incendios o sequías, y se recupera cuando se protege o reforesta.",en:"Vegetation declines through deforestation, farming, mining, fire or drought, and recovers when protected or replanted."}};
+const CONCEPTS=[
+  {w:["mann kendall","mann-kendall"],k:3},{w:["pendiente de sen","sen slope","sen's slope","sens slope"," sen "],k:4},{w:["valor p","p-value","p value","pvalue"],k:2},
+  {w:["significativ","significant","significance"],k:1},{w:["tendencia","trend"],k:0},{w:["anomalia","anomaly"],k:5},{w:["ndvi","indice de vegetacion","vegetation index"],k:6},
+  {w:["serie de tiempo","serie temporal","time series"],k:8},{w:["gigatonelada","gigatonne"," gt "],k:9}];
+const DSWORDS={landsat:["landsat","hls"],lst:["mod11","temperatura de superficie","land surface temperature"],ndvi:["mod13"],snow:["mod10","cobertura de nieve","snow cover"],gpm:["gpm","imerg"],
+  smap:["smap","humedad del suelo","soil moisture"],grace:["grace"],firms:["firms","viirs"],burn:["mcd64","area quemada","burned area"],sealevel:["jason","sentinel-6","sentinel 6","altimetr"],
+  sst:["mur sst","temperatura del mar","sea surface temperature","sst"],sargassum:["afai"],swot:["swot"],icesat:["icesat"],so2:["omps","omi ","so2","dioxido de azufre"],seaice:["hielo marino","sea ice","nsidc"],nisar:["nisar","hundimiento","subsidence"]};
+const HELP=[{w:["juego","game","caso","case","detective","mision","mission"],id:"game"},{w:["data lab","laboratorio","csv","giovanni","subir datos","upload"],id:"lab"},
+  {w:["xp","insignia","badge","rango","rank","pasaporte","passport","puntos","points","nivel","level"],id:"base"},{w:["descargar","exportar","download","export","notion","excel"],id:"base"},
+  {w:["api","plugin","widget","skill","insertar","embed"],id:"dev"},{w:["experimento","discovery","simulador","simulator"],id:"discovery"},{w:["imagen satelital","satellite image","worldview","antes y despues","before and after","comparar imagenes","explorer","explorador"],id:"explorer"},{w:["preguntar","preguntas","ask","question"],id:"ask"},
+  {w:["como uso","como usar","como funciona","how do i","how to use","how does","manual","ayuda","help","tutorial","guia","guide","empezar","start"],id:"start"}];
+let QA_LAST={country:null,intent:null};
+const nrm=s=>" "+(s||"").toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu,"").replace(/[¿?¡!.,;:()"“”«»']/g," ").replace(/\s+/g," ").trim()+" ";
+const hasAny=(n,ws)=>ws.some(w=>n.includes(" "+nrm(w).trim()+" ")||(w.length>5&&n.includes(nrm(w).trim())));
+function lev(a,b){const m=a.length,n=b.length;if(Math.abs(m-n)>2)return 9;const d=Array.from({length:m+1},(_,i)=>[i]);for(let j=1;j<=n;j++)d[0][j]=j;
+  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[m][n];}
+function findCountries(q){
+  const n=nrm(q), found=[];
+  const add=c=>{if(c&&!found.includes(c))found.push(c);};
+  COUNTRIES.slice().sort((a,b)=>b.es.length-a.es.length).forEach(c=>{if(n.includes(nrm(c.es))||n.includes(nrm(c.en)))add(c);});
+  for(const [i,ws] of Object.entries(ALIAS)) if(ws.some(w=>n.includes(nrm(w))))add(COUNTRIES.find(c=>c.i===i));
+  if(!found.length){
+    const toks=n.trim().split(" ").filter(x=>x.length>=5);
+    for(const tk of toks)for(const c of COUNTRIES)for(const nm of [c.es,c.en]){const one=nrm(nm).trim();if(!one.includes(" ")&&lev(tk,one)<=(one.length>=8?2:1))add(c);}
+  }
+  const pos=c=>{const ps=[nrm(c.es),nrm(c.en),...(ALIAS[c.i]||[]).map(nrm)].map(s=>n.indexOf(s.trim())).filter(i=>i>=0);return ps.length?Math.min(...ps):999;};
+  return found.sort((a,b)=>pos(a)-pos(b));
 }
-function profileData(c){const e=DATA[c.i];return {country:c[LANG],code:c.i,region:CONT[c.c][LANG],agency:e.inst,agency_links:e.urls,
-  phenomenon_type:CATS[e.cat][LANG],what_is_changing:e.ph[LANG],research_question:e.q[LANG],analogy:CATS[e.cat].an[LANG],
-  nasa_datasets:e.nasa.map(k=>({name:NASA[k].n,agency:NASA[k].o,measures:NASA[k][LANG],analogy:NASA[k].an[LANG]})),note:e.note?e.note[LANG]:null,
-  statistical_analysis:"pending"};}
+function findCountry(q){return findCountries(q)[0]||null;}
+const L2=(es,en)=>LANG==="es"?es:en;
+const listNames=arr=>arr.map(c=>c[LANG]).join(", ");
+function countryAnswer(c,intent){
+  const e=DATA[c.i], name=c[LANG], cat=CATS[e.cat];
+  const why=CAUSES[e.cat][LANG], an=cat.an[LANG];
+  const ds=e.nasa.map(k=>`• ${NASA[k].n} (${NASA[k].o}): ${NASA[k][LANG]}`).join("\n");
+  const src=e.urls.length?`${e.inst} (${host(e.urls[0])})`:e.inst;
+  const fol=[L2(`¿Por qué está pasando esto en ${name}?`,`Why is this happening in ${name}?`),L2(`¿Qué datos de la NASA miden esto en ${name}?`,`Which NASA data measure this in ${name}?`),L2(`¿Quién mide el clima en ${name}?`,`Who measures the weather in ${name}?`),L2(`¿Es significativo el cambio en ${name}?`,`Is the change in ${name} significant?`)];
+  switch(intent){
+    case "who": return {text:L2(`🏛 En ${name}, la institución oficial es ${src}.\n\nSus estaciones en tierra sirven para comparar y validar lo que miden los satélites de la NASA.${e.note?"\n\nℹ "+e.note.es:""}`,
+      `🏛 In ${name}, the official agency is ${src}.\n\nIts ground stations are used to compare and validate what NASA satellites measure.${e.note?"\n\nℹ "+e.note.en:""}`),follow:fol.filter((_,i)=>i!==2)};
+    case "data": return {text:L2(`📡 Para investigar «${cat.es}» en ${name} usamos:\n${ds}\n\n💡 ${NASA[e.nasa[0]].an.es}\n\nEn la ficha del país, la «Vista satelital» muestra estas imágenes de dos años distintos.`,
+      `📡 To investigate “${cat.en}” in ${name} we use:\n${ds}\n\n💡 ${NASA[e.nasa[0]].an.en}\n\nIn the country profile, “Satellite view” shows this imagery for two different years.`),follow:fol.filter((_,i)=>i!==1)};
+    case "why": return {text:L2(`🔎 En ${name}, el fenómeno principal es «${cat.es}»:\n${e.ph.es.map(x=>"• "+x).join("\n")}\n\nPor qué ocurre (explicación general): ${why}\n\n💡 ${an}`,
+      `🔎 In ${name}, the main phenomenon is “${cat.en}”:\n${e.ph.en.map(x=>"• "+x).join("\n")}\n\nWhy it happens (general explanation): ${why}\n\n💡 ${an}`),follow:fol.filter((_,i)=>i!==0)};
+    case "much": return {text:L2(`📊 La pregunta de investigación de ${name} es: «${e.q.es}»\n\nPara saber cuánto cambió y si es significativo:\n1. Abre NASA Giovanni y descarga la serie de ${NASA[e.nasa[0]].n} para ${name} (Time Series, Area-Averaged).\n2. Súbela al Data Lab: la plataforma aplica Mann-Kendall y la pendiente de Sen y te da el veredicto.\n\nNo damos cifras sin esa serie, para no inventar datos.\n\n💡 Mann-Kendall es como saber si un jugador realmente mejora: no basta un buen partido, la mayoría tiene que superar a los anteriores.`,
+      `📊 ${name}’s research question is: “${e.q.en}”\n\nTo find out how much it changed and whether it’s significant:\n1. Open NASA Giovanni and download the ${NASA[e.nasa[0]].n} series for ${name} (Time Series, Area-Averaged).\n2. Upload it to the Data Lab: the platform runs Mann-Kendall and Sen’s slope and gives you the verdict.\n\nWe don’t give numbers without that series, so nothing is made up.\n\n💡 Mann-Kendall is like checking whether a player is really improving: one good game isn’t enough, most games must beat the earlier ones.`),follow:fol.filter((_,i)=>i!==3)};
+    case "where": return {text:L2(`📍 ${name} está en ${CONT[c.c].es}${c.also?" / "+CONT[c.also].es:""}. En el mapa del Earth Explorer está coloreado como «${cat.es}», y el botón «Ver este país en NASA Worldview» abre sus imágenes satelitales.`,
+      `📍 ${name} is in ${CONT[c.c].en}${c.also?" / "+CONT[c.also].en:""}. On the Earth Explorer map it is colored as “${cat.en}”, and the “View this country in NASA Worldview” button opens its satellite imagery.`),follow:fol};
+    default: return {text:L2(`🌍 ${name} · ${cat.ico} ${cat.es}\n\nQué está cambiando:\n${e.ph.es.map(x=>"• "+x).join("\n")}\n\n🎯 Pregunta de investigación: ${e.q.es}\n🏛 Fuente oficial: ${src}\n📡 Datos NASA: ${e.nasa.map(k=>NASA[k].n).join(", ")}\n\n💡 ${an}`,
+      `🌍 ${name} · ${cat.ico} ${cat.en}\n\nWhat is changing:\n${e.ph.en.map(x=>"• "+x).join("\n")}\n\n🎯 Research question: ${e.q.en}\n🏛 Official source: ${src}\n📡 NASA data: ${e.nasa.map(k=>NASA[k].n).join(", ")}\n\n💡 ${an}`),follow:fol};
+  }
+}
+function specialAnswer(key){
+  if(key==="aral"){const c=GCASES.find(x=>x.id==="aral"),k=gKey(c),r=analyze(k.years,k.values);
+    return {text:L2(`🏜 El Mar de Aral fue uno de los lagos más grandes del mundo y perdió la mayor parte de su superficie después de que sus ríos se desviaran para regar cultivos.\n\nEs el caso 2 del juego, donde aparece como testigo «opuesto» al Lago Enriquillo, que creció.\n\nCausa: ${CAUSES.water.es}\n\n💡 ${CATS.water.an.es}`,
+      `🏜 The Aral Sea was one of the world’s largest lakes and lost most of its surface after its rivers were diverted to irrigate crops.\n\nIt is case 2 in the game, where it appears as the “opposite” witness to Lake Enriquillo, which grew.\n\nCause: ${CAUSES.water.en}\n\n💡 ${CATS.water.an.en}`),follow:[L2("¿Qué está cambiando en República Dominicana?","What is changing in the Dominican Republic?"),L2("¿Qué países tienen problemas con lagos o ríos?","Which countries have lake or river problems?")]};}
+  const isG=key==="greenland", ser=isG?gKey(GCASES.find(x=>x.id==="greenland")):WITNESS.antarctica, r=analyze(ser.years,ser.values,true);
+  const nm=SPECIAL[key][LANG];
+  return {text:L2(`🧊 ${nm} · datos reales de la NASA (GRACE / GRACE-FO, NASA JPL)\n\n• Tendencia: ${fmtN(r.slope,0)} gigatoneladas por año (pendiente de Sen)\n• Cambio total ${ser.years[0]}–${ser.years.at(-1)}: ${fmtN(r.total,0)} Gt\n• Mann-Kendall: Z = ${fmtN(r.Z,2)}, p ${fmtP(r.p)} → ${t("v_"+r.level).toLowerCase()}\n\nUna gigatonelada es aproximadamente un kilómetro cúbico de agua.\n\nCausa: ${CAUSES.ice.es}\n\n💡 ${NASA.grace.an.es}`,
+    `🧊 ${nm} · real NASA data (GRACE / GRACE-FO, NASA JPL)\n\n• Trend: ${fmtN(r.slope,0)} gigatonnes per year (Sen’s slope)\n• Total change ${ser.years[0]}–${ser.years.at(-1)}: ${fmtN(r.total,0)} Gt\n• Mann-Kendall: Z = ${fmtN(r.Z,2)}, p ${fmtP(r.p)} → ${t("v_"+r.level).toLowerCase()}\n\nOne gigatonne is roughly one cubic kilometer of water.\n\nCause: ${CAUSES.ice.en}\n\n💡 ${NASA.grace.an.en}`),
+    follow:[isG?L2("¿Qué pasa con la Antártida?","What about Antarctica?"):L2("¿Qué pasa con Groenlandia?","What about Greenland?"),L2("¿Qué países pierden hielo?","Which countries are losing ice?"),L2("¿Qué es GRACE?","What is GRACE?")]};
+}
+function phMatch(c,cat){const ph=DATA[c.i].ph[LANG];if(!cat||DATA[c.i].cat===cat&&!CATWORDS[cat].some(k=>nrm(ph.join(" ")).includes(nrm(k).trim())))return ph[0];
+  return ph.find(x=>CATWORDS[cat].some(k=>nrm(x).includes(nrm(k).trim())))||ph[0];}
+const mentions=(c,cat)=>CATWORDS[cat].some(k=>nrm(DATA[c.i].ph[LANG].join(" ")).includes(" "+nrm(k).trim()));
 function localAnswer(q){
-  const n=norm(q), c=findCountry(q)||exSel;
-  const catHit=Object.entries({ice:["glaciar","hielo","nieve","glacier","ice","snow"],drought:["sequia","calor","drought","heat"],fire:["incendio","fuego","fire","wildfire","quemad"],
-    flood:["inundacion","flood","lluvia","rain","huracan","ciclon","hurricane","cyclone"],coast:["costa","nivel del mar","coast","sea level","coral","sargazo","sargassum"],water:["lago","rio","embalse","lake","river","reservoir","agua subterranea","groundwater"],forest:["bosque","forest","vegetacion","vegetation","deforest","selva"]})
-    .find(([k,ws])=>ws.some(w=>n.includes(w)));
-  const mentioned=findCountry(q);
-  if(/(sargaz|sargass)/.test(n)&&!mentioned){
-    const L=COUNTRIES.filter(x=>DATA[x.i].nasa.includes("sargassum")).map(x=>x[LANG]);
-    return LANG==="es"?`El sargazo es un alga flotante que llega en grandes cantidades a playas del Caribe. En la plataforma lo seguimos en: ${L.join(", ")}.\n\nSe detecta con el índice de algas flotantes (AFAI) calculado con imágenes MODIS y VIIRS.\n\n💡 ${NASA.sargassum.an.es}`
-      :`Sargassum is a floating seaweed that reaches Caribbean beaches in huge amounts. On the platform we track it in: ${L.join(", ")}.\n\nIt is detected with the floating algae index (AFAI) computed from MODIS and VIIRS imagery.\n\n💡 ${NASA.sargassum.an.en}`;
-  }
-  if(catHit&&!mentioned){
-    const L=COUNTRIES.filter(x=>DATA[x.i].cat===catHit[0]).map(x=>x[LANG]);
-    return (LANG==="es"?`Países de la plataforma cuyo fenómeno principal es «${CATS[catHit[0]].es}» (${L.length}):\n${L.join(", ")}.\n\n💡 ${CATS[catHit[0]].an.es}`
-      :`Platform countries whose main phenomenon is “${CATS[catHit[0]].en}” (${L.length}):\n${L.join(", ")}.\n\n💡 ${CATS[catHit[0]].an.en}`);
-  }
-  if(!c) return t("locNoCountry");
-  const e=DATA[c.i], name=c[LANG];
-  if(/(quien|institucion|fuente|agencia|servicio|who|agency|official|source)/.test(n))
-    return !e.urls.length?(LANG==="es"?`En ${name}, la institución oficial es ${e.inst}.`:`In ${name}, the official agency is ${e.inst}.`):(LANG==="es"?`En ${name}, la fuente oficial es ${e.inst}${e.urls[0]?" ("+host(e.urls[0])+")":""}. Sus mediciones en tierra sirven para validar lo que ven los satélites de la NASA.`
-      :`In ${name}, the official source is ${e.inst}${e.urls[0]?" ("+host(e.urls[0])+")":""}. Its ground measurements help validate what NASA satellites see.`);
-  if(/(nasa|satelite|satellite|dato|data|medir|mide|measure|imagen|image)/.test(n))
-    return (LANG==="es"?`Para investigar ${name} usamos:\n`:`To investigate ${name} we use:\n`)+
-      e.nasa.map(k=>`• ${NASA[k].n}: ${NASA[k][LANG]}\n  💡 ${NASA[k].an[LANG]}`).join("\n");
-  if(/(tendencia|significativ|estadistic|trend|significant|statistic|cuanto|how much|how far)/.test(n))
-    return LANG==="es"?`La pregunta de investigación de ${name} es: «${e.q.es}».\n\nPara responder «cuánto» necesitamos la serie temporal procesada y la prueba de Mann-Kendall, que todavía está pendiente para este país. No damos cifras hasta tenerlas.\n\n💡 Mann-Kendall es como saber si un jugador realmente mejora: no basta un partido bueno, hay que ver si la mayoría de los partidos son mejores que los anteriores.`
-      :`${name}’s research question is: “${e.q.en}”.\n\nTo answer “how much” we need the processed time series and the Mann-Kendall test, which is still pending for this country. We don’t give numbers until we have them.\n\n💡 Mann-Kendall is like checking whether a player is really improving: one good game isn’t enough, most games must beat the earlier ones.`;
-  return (LANG==="es"?`En ${name}, el fenómeno principal es «${CATS[e.cat].es}»:\n`:`In ${name}, the main phenomenon is “${CATS[e.cat].en}”:\n`)+
-    e.ph[LANG].map(x=>"• "+x).join("\n")+`\n\n💡 ${CATS[e.cat].an[LANG]}`;
+  const n0=nrm(q), en=(n0.match(/ (what|which|where|why|who|how|is|are|the|in|does|changing|about|and|compare|of|to|for|with|there|happening) /g)||[]).length, es=(n0.match(/ (que|cual|donde|por|quien|como|esta|el|la|en|los|las|hay|pasa|y|de|con|para|compara|cambiando) /g)||[]).length;
+  const prev=LANG; if(en>es)LANG="en"; else if(es>en)LANG="es";
+  try{return localAnswerCore(q);}finally{LANG=prev;}
 }
+function localAnswerCore(q){
+  const n=nrm(q), cs=findCountries(q);
+  const intent=/(quien|quienes|institucion|fuente|agencia|servicio meteorologico|organismo| who |agency|official|source|weather service)/.test(n)?"who"
+    :/(por que|porque|causa|motivo| why |cause|reason)/.test(n)?"why"
+    :/(cuanto|cuanta|significativ|tendencia|estadistic|mann|real o|es real| how much| how far|significant|trend|statistic|is it real)/.test(n)?"much"
+    :/(nasa|satelit|dato|data|medir|mide|miden|measure|instrumento|imagen|image|dataset)/.test(n)?"data"
+    :/(donde|ubicad|where|located|mapa|map)/.test(n)?"where":null;
+  const reg=Object.entries(REGWORDS).find(([k,ws])=>hasAny(n,ws));
+  const cat=Object.entries(CATWORDS).find(([k,ws])=>hasAny(n,ws));
+  const special=Object.entries(SPECIAL).find(([k,v])=>hasAny(n,v.w));
+  const concept=CONCEPTS.find(c=>c.w.some(w=>n.includes(nrm(w).trim().length<4?nrm(w):nrm(w).trim())));
+  const dsHit=Object.entries(DSWORDS).find(([k,ws])=>ws.some(w=>n.includes(nrm(w).trim())));
+  const help=HELP.find(h=>hasAny(n,h.w));
+  const isDef=/(que es|que son|que significa|define|significado|what is|what are|what does|meaning)/.test(n);
+  // 1. saludo
+  if(/^ (hola|buenas|hello|hi|hey|buenos dias|good morning)( |$)/.test(n)&&n.trim().split(" ").length<=3)
+    return {text:L2("👋 ¡Hola! Pregúntame por cualquiera de los 110 países (por ejemplo, «¿Qué está cambiando en Perú?»), por un fenómeno («¿Dónde hay incendios?») o por un concepto («¿Qué es el NDVI?»).","👋 Hi! Ask me about any of the 110 countries (for example, “What is changing in Peru?”), a phenomenon (“Where are there wildfires?”) or a concept (“What is NDVI?”)."),
+      follow:[t("gq3"),t("gq1"),L2("¿Qué es el NDVI?","What is NDVI?")]};
+  if(/(sargaz|sargass)/.test(n)&&cs.length<2&&!(cs[0]&&!DATA[cs[0].i].nasa.includes("sargassum"))){
+    const S=COUNTRIES.filter(x=>DATA[x.i].nasa.includes("sargassum")||nrm(DATA[x.i].ph.es.join(" ")).includes("sargaz"));
+    return {text:L2(`🟤 El sargazo es un alga flotante que llega en enormes cantidades a las playas del Caribe, afectando el turismo, la pesca y la salud de las costas.\n\nEn la plataforma lo seguimos en: ${listNames(S)}.\n\n🛰 Se detecta con el índice de algas flotantes (AFAI), calculado con imágenes MODIS y VIIRS, y su llegada aumenta cuando el mar está más cálido (MUR SST).\n\n💡 ${NASA.sargassum.an.es}`,
+      `🟤 Sargassum is a floating seaweed that reaches Caribbean beaches in huge amounts, hurting tourism, fishing and coastal health.\n\nOn the platform we track it in: ${listNames(S)}.\n\n🛰 It is detected with the floating algae index (AFAI), computed from MODIS and VIIRS imagery, and landings grow when the sea is warmer (MUR SST).\n\n💡 ${NASA.sargassum.an.en}`),
+      follow:S.slice(0,3).map(c=>L2(`¿Qué está cambiando en ${c.es}?`,`What is changing in ${c.en}?`))};
+  }
+  if(cs.length===1&&cat&&DATA[cs[0].i].cat!==cat[0]&&!mentions(cs[0],cat[0])){
+    const c=cs[0],e=DATA[c.i],o=COUNTRIES.filter(x=>x.c===c.c&&(DATA[x.i].cat===cat[0]||mentions(x,cat[0])));QA_LAST={country:c,intent};
+    return {text:L2(`En ${c.es}, la plataforma no registra «${CATS[cat[0]].es}» como fenómeno principal. Lo que sí documenta es «${CATS[e.cat].es}»:\n${e.ph.es.map(x=>"• "+x).join("\n")}${o.length?`\n\nEn ${CONT[c.c].es}, «${CATS[cat[0]].es.toLowerCase()}» aparece en: ${listNames(o)}.`:""}`,
+      `In ${c.en}, the platform doesn’t record “${CATS[cat[0]].en}” as a main phenomenon. What it does document is “${CATS[e.cat].en}”:\n${e.ph.en.map(x=>"• "+x).join("\n")}${o.length?`\n\nIn ${CONT[c.c].en}, “${CATS[cat[0]].en.toLowerCase()}” appears in: ${listNames(o)}.`:""}`),
+      follow:o.slice(0,2).map(x=>L2(`¿Qué está cambiando en ${x.es}?`,`What is changing in ${x.en}?`)).concat([L2(`¿Por qué está pasando esto en ${c.es}?`,`Why is this happening in ${c.en}?`)])};
+  }
+  if(/( capital | poblacion | habitantes | presidente | idioma | moneda | population | president | currency | language | futbol | football )/.test(n)){
+    const c=cs[0];
+    return {text:L2(`Esa pregunta no es de ciencias de la Tierra, así que no está en nuestros datos. Aquí puedo ayudarte con cómo está cambiando ${c?c.es:"un país"}: hielo, sequía, incendios, inundaciones, costas, agua o bosques.`,
+      `That question isn’t about Earth science, so it isn’t in our data. Here I can help with how ${c?c.en:"a country"} is changing: ice, drought, wildfires, floods, coasts, water or forests.`),
+      follow:c?[L2(`¿Qué está cambiando en ${c.es}?`,`What is changing in ${c.en}?`),L2(`¿Quién mide el clima en ${c.es}?`,`Who measures the weather in ${c.en}?`)]:[t("gq3"),t("gq1")]};
+  }
+  // 2. lugares con datos reales
+  if(special&&!cs.length){QA_LAST={country:null,intent};return specialAnswer(special[0]);}
+  // 3. comparar dos países
+  if(cs.length>=2){
+    const [a,b]=cs, ea=DATA[a.i], eb=DATA[b.i];
+    const same=ea.cat===eb.cat;
+    return {text:L2(`⚖ ${a.es} frente a ${b.es}\n\n${a.es} · ${CATS[ea.cat].es}\n${ea.ph.es.map(x=>"• "+x).join("\n")}\n\n${b.es} · ${CATS[eb.cat].es}\n${eb.ph.es.map(x=>"• "+x).join("\n")}\n\n${same?"Comparten el mismo tipo de fenómeno: compara sus series en el Data Lab (Serie A y Serie B) para ver si cambian al mismo ritmo.":"Tienen fenómenos distintos. Para comparar la misma variable en ambos, cárgalas en el Data Lab: si van en direcciones opuestas y ambas son significativas, la plataforma lo marcará como contradicción."}`,
+      `⚖ ${a.en} vs ${b.en}\n\n${a.en} · ${CATS[ea.cat].en}\n${ea.ph.en.map(x=>"• "+x).join("\n")}\n\n${b.en} · ${CATS[eb.cat].en}\n${eb.ph.en.map(x=>"• "+x).join("\n")}\n\n${same?"They share the same type of phenomenon: compare their series in the Data Lab (Series A and B) to see whether they change at the same pace.":"They have different phenomena. To compare the same variable in both, load them in the Data Lab: if they move in opposite directions and both are significant, the platform flags a contradiction."}`),
+      follow:[countryAnswer(a,"data")&&L2(`¿Qué datos de la NASA miden esto en ${a.es}?`,`Which NASA data measure this in ${a.en}?`),L2(`¿Por qué está pasando esto en ${b.es}?`,`Why is this happening in ${b.en}?`)]};
+  }
+  // 4. un país
+  if(cs.length===1){QA_LAST={country:cs[0],intent};return countryAnswer(cs[0],intent);}
+  // 5. definiciones y datasets
+  if(concept&&(isDef||!cat)){const g=GLOSS[concept.k];return {text:L2(`📖 ${g[1]}: ${g[3]}${concept.k===3?"\n\n💡 Es como saber si un jugador realmente mejora: no basta un buen partido, la mayoría tiene que superar a los anteriores.":concept.k===4?"\n\n💡 Es como medir la velocidad típica de un corredor sin contar los tropiezos.":""}\n\nPruébalo en el Data Lab o en el experimento «¿Real o ruido?» del Discovery Center.`,
+    `📖 ${g[0]}: ${g[2]}${concept.k===3?"\n\n💡 It’s like checking whether a player is really improving: one good game isn’t enough, most games must beat the earlier ones.":concept.k===4?"\n\n💡 It’s like measuring a runner’s typical speed without counting the stumbles.":""}\n\nTry it in the Data Lab or in the “Real or noise?” experiment in the Discovery Center.`),follow:[L2("¿Qué es el valor p?","What is a p-value?"),L2("¿Qué es la pendiente de Sen?","What is Sen’s slope?"),L2("¿Qué es el NDVI?","What is NDVI?")]};}
+  if(dsHit&&(isDef||!cat)){const d=NASA[dsHit[0]], used=COUNTRIES.filter(c=>DATA[c.i].nasa.includes(dsHit[0]));
+    return {text:L2(`🛰 ${d.n} (${d.o}): ${d.es}\n\n💡 ${d.an.es}\n\nLo usamos en ${used.length} países, por ejemplo: ${listNames(used.slice(0,8))}${used.length>8?"…":""}.`,
+      `🛰 ${d.n} (${d.o}): ${d.en}\n\n💡 ${d.an.en}\n\nWe use it in ${used.length} countries, for example: ${listNames(used.slice(0,8))}${used.length>8?"…":""}.`),follow:used.slice(0,2).map(c=>L2(`¿Qué está cambiando en ${c.es}?`,`What is changing in ${c.en}?`))};}
+  // 6. ayuda sobre la plataforma
+  if(help&&!cat&&!reg){const s=GUIDE.find(g=>g.id===help.id);return {text:`${s.ico} ${s.t[LANG]}\n\n${s.s[LANG].map((x,i)=>`${i+1}. ${x.replace(/<\/?b>/g,"")}`).join("\n")}\n\n${L2("Más detalles en la sección Guide del menú.","More details in the Guide section of the menu.")}`,follow:[L2("¿Cómo funciona el Data Lab?","How does the Data Lab work?"),L2("¿Cómo gano XP?","How do I earn XP?")]};}
+  // 7. región y/o fenómeno
+  if(reg||cat){
+    let L=reg?COUNTRIES.filter(c=>inRegion(c,reg[0])):COUNTRIES.slice();
+    if(cat)L=L.filter(c=>DATA[c.i].cat===cat[0]||mentions(c,cat[0])).sort((a,b)=>(DATA[b.i].cat===cat[0])-(DATA[a.i].cat===cat[0]));
+    const where=reg?CONT[reg[0]][LANG]:L2("la plataforma","the platform");
+    if(!L.length)return {text:L2(`No encontré países con «${CATS[cat[0]].es}» en ${where}. Prueba con otra región.`,`I didn’t find countries with “${CATS[cat[0]].en}” in ${where}. Try another region.`),follow:[t("gq1"),t("gq2")]};
+    if(cat){return {text:L2(`${CATS[cat[0]].ico} ${CATS[cat[0]].es} en ${where} (${L.length} países):\n${L.map(c=>`• ${c.es}: ${phMatch(c,cat[0])}`).slice(0,10).join("\n")}${L.length>10?`\n…y ${L.length-10} más.`:""}\n\nPor qué ocurre: ${CAUSES[cat[0]].es}\n\n💡 ${CATS[cat[0]].an.es}`,
+      `${CATS[cat[0]].ico} ${CATS[cat[0]].en} in ${where} (${L.length} countries):\n${L.map(c=>`• ${c.en}: ${phMatch(c,cat[0])}`).slice(0,10).join("\n")}${L.length>10?`\n…and ${L.length-10} more.`:""}\n\nWhy it happens: ${CAUSES[cat[0]].en}\n\n💡 ${CATS[cat[0]].an.en}`),follow:L.slice(0,3).map(c=>L2(`¿Qué está cambiando en ${c.es}?`,`What is changing in ${c.en}?`))};}
+    const cnt=d3.rollups(L,v=>v.length,c=>DATA[c.i].cat).sort((a,b)=>b[1]-a[1]);
+    return {text:L2(`🗺 ${where}: ${L.length} países en la plataforma.\n\nFenómenos principales:\n${cnt.map(([k,v])=>`• ${CATS[k].ico} ${CATS[k].es}: ${v} (${listNames(L.filter(c=>DATA[c.i].cat===k).slice(0,4))}${v>4?"…":""})`).join("\n")}\n\nToca la pestaña «${where}» en el Earth Explorer para verlos en el mapa.`,
+      `🗺 ${where}: ${L.length} countries on the platform.\n\nMain phenomena:\n${cnt.map(([k,v])=>`• ${CATS[k].ico} ${CATS[k].en}: ${v} (${listNames(L.filter(c=>DATA[c.i].cat===k).slice(0,4))}${v>4?"…":""})`).join("\n")}\n\nTap the “${where}” tab in the Earth Explorer to see them on the map.`),
+      follow:cnt.slice(0,2).map(([k])=>L2(`¿Dónde hay ${CATS[k].es.toLowerCase()} en ${where}?`,`Where is ${CATS[k].en.toLowerCase()} in ${where}?`))};
+  }
+  // 8. seguimiento: «¿y por qué?», «¿quién lo mide?»
+  if(intent&&(QA_LAST.country||exSel)){const c=QA_LAST.country||exSel;QA_LAST={country:c,intent};return countryAnswer(c,intent);}
+  // 9. no entendí
+  return {text:L2("🤔 No encontré esa información en la plataforma. Prueba mencionando un país, un fenómeno o un concepto. Por ejemplo:","🤔 I couldn’t find that on the platform. Try mentioning a country, a phenomenon or a concept. For example:"),
+    follow:[t("gq3"),t("gq1"),L2("¿Qué está cambiando en Europa?","What is changing in Europe?"),L2("¿Qué es Mann-Kendall?","What is Mann-Kendall?")]};
+}
+
 async function ask(q){
   q=q.trim(); if(!q)return;
   const out=document.getElementById("answer");
@@ -1654,7 +1790,11 @@ async function ask(q){
   const finish=mode=>{txt.classList.remove("wait");by.innerHTML=`<span>${t(mode)}</span>${t("verify")}`;
     if(sc){document.getElementById("aacts").innerHTML=`<button class="mini-btn" id="goProf">${t("seeProf")} ${flag(sc.i)} ${sc[LANG]}</button>`;
       document.getElementById("goProf").onclick=()=>document.getElementById("profile").scrollIntoView({behavior:reduced?"auto":"smooth"});}};
-  if(!SAMPLE){txt.textContent=localAnswer(q);finish("modeLocal");return;}
+  const showLocal=()=>{const r=localAnswer(q);txt.textContent=r.text;finish("modeLocal");
+    const f=(r.follow||[]).filter(Boolean);
+    if(f.length){const box=document.createElement("div");box.className="chips";box.innerHTML=`<span class="lbl2" style="width:100%;margin:6px 0 0">${t("followT")}</span>`+f.map(x=>`<button type="button">${escapeHtml(x)}</button>`).join("");
+      document.getElementById("aacts").after(box);box.querySelectorAll("button").forEach(b=>b.onclick=()=>{document.getElementById("askIn").value=b.textContent;ask(b.textContent);});}};
+  if(!SAMPLE){showLocal();return;}
   if(askAbort)askAbort.abort(); askAbort=new AbortController();
   const catalog=COUNTRIES.map(x=>`${x.i}=${x[LANG]}(${DATA[x.i].cat})`).join(", ");
   const prompt=`You are the research assistant inside EARTH//TRACE, a NASA Space Apps 2026 platform that helps anyone investigate how the Earth is changing.
@@ -1678,7 +1818,7 @@ Question: ${q}`;
     txt.textContent=res.text; askHistory.push({q,a:res.text.slice(0,400)}); finish("modeAI");
   }catch(err){
     if(err&&err.name==="AbortError")return;
-    txt.textContent=localAnswer(q); finish("modeLocal");
+    showLocal();
     if(err&&err.code==="not_granted")SAMPLE=null;
   }
 }
