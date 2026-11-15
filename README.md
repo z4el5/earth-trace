@@ -12,8 +12,10 @@ EARTH//TRACE es una plataforma web gamificada para investigar cómo cambia la Ti
 |---|---|
 | `index.html` | La plataforma completa: globo 3D; **Earth Explorer** (110 países, preguntas en lenguaje natural, visor satelital antes/después con NASA GIBS); **Discovery Center** (4 experimentos interactivos); **Game** (3 casos de detective en 5 fases); **Data Lab** (Mann-Kendall y Sen sobre CSV de Giovanni/AppEEARS, comparación de dos series); **Global Case Files**; XP, rangos, insignias, pasaporte y "Mi base". |
 | `api/v1/` | **API abierta** en JSON estático: `countries.json`, `profiles.json`, `regions.json`, `datasets.json`, `categories.json`. |
-| `widget/` | **Plugin**: muestra la ficha de un país en cualquier web con dos líneas de código (ver `widget/ejemplo.html`). |
+| `widget/` | **Plugin**: `burbuja.js` añade el asistente flotante (un planeta que abre un chat) a cualquier web con una línea; `asistente.html` es ese chat; `earthtrace-widget.js` muestra la ficha de un país (ver `widget/ejemplo.html`). |
+| `extension/` | **Extensión de Chrome/Edge**: el asistente aparece en todas las pestañas del navegador. Instalación en `extension/LEEME.md`. |
 | `skill/earth-trace/` | **Skill** para asistentes de IA (formato Agent Skills): instrucciones + `scripts/tendencia.py` (Mann-Kendall y pendiente de Sen). |
+| `ai-worker/` | Asistente de IA opcional (Cloudflare Worker con Gemini o Claude). Instrucciones en `ai-worker/LEEME.md`. |
 | `python/procesar_datos.py` | Descarga datos de la NASA con `earthaccess` y calcula tendencias. |
 | `data/fuentes_por_pais.csv` | Las 110 fuentes oficiales investigadas por el equipo. |
 | `docs/USER_GUIDE.md` · `docs/MANUAL_USUARIO.md` | Manual de usuario en inglés y español (también dentro de la plataforma, sección Guide). |
@@ -45,6 +47,7 @@ Fuentes complementarias (no NASA, siempre identificadas): servicios meteorológi
 
 - ✅ 110 países con fuente oficial, fenómeno, pregunta de investigación y datos NASA asignados.
 - ✅ Visor satelital, API, plugin, Skill, gamificación y exportación.
+- ✅ Asistente flotante en toda la plataforma, plugin de una línea y extensión de navegador.
 - ✅ Data Lab funcional: analiza cualquier serie real descargada de NASA Giovanni o AppEEARS.
 - ✅ Caso de Groenlandia y testigo de la Antártida con datos reales de NASA JPL (GRACE / GRACE-FO). Ver `docs/DATOS.md`.
 - ⏳ Casos de Enriquillo y Aral: valores ilustrativos, marcados así en la plataforma.
@@ -56,7 +59,7 @@ Fuentes complementarias (no NASA, siempre identificadas): servicios meteorológi
 Siguiendo las reglas de Space Apps, declaramos el uso de IA:
 
 - **Claude (Anthropic)** se usó para: estructurar las ideas del proyecto, generar el código base de la plataforma, la API, el plugin y el Skill, redactar textos y analogías, y revisar las fuentes que reunió el equipo.
-- Dentro de la plataforma (solo en la versión de claude.ai), las preguntas se responden con Claude a partir de los datos de la plataforma, y cada respuesta lo indica.
+- Dentro de la plataforma, si se activa el asistente (`ai-worker/`), las preguntas se responden con IA (Gemini de Google o Claude de Anthropic) a partir de los datos de la plataforma, y cada respuesta lo indica. Sin el asistente, responde un motor local propio, sin IA.
 - La investigación de fuentes oficiales, las decisiones de diseño y la validación de datos fueron hechas por el equipo.
 
 ## Licencia
