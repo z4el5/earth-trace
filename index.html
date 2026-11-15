@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -528,6 +528,30 @@ input[type=range]{width:100%; accent-color:var(--primary)}
 .score{font-family:var(--display); font-weight:800; font-size:20px}
 @media (max-width:960px){ .ggrid,.dx,.cfgrid,.slots,.labres.two,.gcases{grid-template-columns:1fr} .steps li span{display:none} .stats{grid-template-columns:1fr 1fr} .labsteps{grid-template-columns:1fr} }
 @media (max-width:520px){ .pair,.duo{grid-template-columns:1fr} }
+.guide{display:grid; grid-template-columns:260px minmax(0,1fr); gap:clamp(18px,3vw,40px); align-items:start}
+.toc{position:sticky; top:16px; display:grid; gap:2px; background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:14px}
+.toc b{font-family:var(--display); margin-bottom:6px}
+.toc a{text-decoration:none; padding:7px 10px; border-radius:10px; font-size:15px}
+.toc a:hover{background:var(--surface2)}
+.gsec{background:var(--surface); border:1px solid var(--line); border-radius:22px; padding:clamp(18px,2.6vw,28px); margin-bottom:16px; scroll-margin-top:16px}
+.gsec h2{font-size:clamp(22px,2.6vw,30px); font-weight:800; margin-bottom:8px}
+.gsec .intro{font-size:17px; margin-bottom:12px}
+.gsteps{margin:0; padding:0; list-style:none; counter-reset:g; display:grid; gap:10px}
+.gsteps li{counter-increment:g; display:grid; grid-template-columns:34px 1fr; gap:12px; align-items:start; font-size:16.5px}
+.gsteps li::before{content:counter(g); width:30px; height:30px; border-radius:50%; background:var(--primary); color:var(--on-primary); display:grid; place-items:center; font-family:var(--display); font-weight:800; font-size:15px}
+.gloss{display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:10px; margin:0}
+.gloss div{background:var(--surface2); border-radius:14px; padding:12px 14px}
+.gloss dt{font-family:var(--display); font-weight:700} .gloss dd{margin:2px 0 0; font-size:15px}
+.faq{border-top:1px solid var(--line); padding:12px 0}
+.faq summary{cursor:pointer; font-weight:700; font-family:var(--display); font-size:17px}
+.faq p{margin:8px 0 0}
+dialog.welcome{border:none; border-radius:24px; padding:clamp(20px,3vw,32px); max-width:620px; width:calc(100% - 32px); background:var(--surface); color:var(--ink); box-shadow:0 30px 80px -20px rgba(0,0,0,.6)}
+dialog.welcome::backdrop{background:rgba(8,46,23,.7)}
+dialog.welcome h2{font-size:clamp(26px,3vw,34px); font-weight:800; margin-bottom:6px}
+.wsteps{list-style:none; padding:0; margin:16px 0 20px; display:grid; gap:10px}
+.wsteps li{display:grid; grid-template-columns:auto 1fr; gap:2px 12px; align-items:center; background:var(--surface2); border-radius:14px; padding:12px}
+.wsteps span{grid-row:span 2; font-size:28px} .wsteps b{font-family:var(--display)} .wsteps small{color:var(--muted); font-size:14px}
+@media (max-width:860px){ .guide{grid-template-columns:1fr} .toc{position:static} }
 
 footer{background:var(--hero-bg); color:var(--hero-muted); padding-block:34px; font-size:15px}
 footer .row{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap}
@@ -562,7 +586,7 @@ footer b{color:var(--hero-ink); font-family:var(--display)}
 /* =========================================================
    TEXTOS (español / inglés)
    ========================================================= */
-let LANG="es";
+let LANG="en"; try{const sl=localStorage.getItem("earthtrace-lang");if(sl==="es"||sl==="en")LANG=sl;}catch(e){}
 const CONT={
   europe:{es:"Europa",en:"Europe",c:[15,52]}, north:{es:"América del Norte",en:"North America",c:[-100,45]},
   central:{es:"América Central",en:"Central America",c:[-86,13]}, caribbean:{es:"El Caribe",en:"The Caribbean",c:[-70,17]},
@@ -746,7 +770,12 @@ const T={
    ndRed:"Luz roja reflejada",ndNir:"Infrarrojo cercano reflejado",ndF:"Bosque",ndC:"Cultivo",ndD:"Desierto",ndW:"Agua",
    ndHigh:"Vegetación densa y sana.",ndMid:"Vegetación moderada o cultivos.",ndLow:"Suelo desnudo o vegetación muy escasa.",ndNeg:"Agua, nubes o nieve.",
    nzScore:"Tu puntuación",again:"Jugar otra vez",round:"Ronda",nzPick:"Toca la gráfica que tiene una tendencia real.",tGood:"¡Correcto!",tBad:"Era la otra.",
-   bDet:"Detective",bDetD:"Resuelve tu primer caso.",bSher:"Detective maestro",bSherD:"Resuelve los 3 casos.",bSci:"Mente científica",bSciD:"Completa los 4 experimentos del Discovery Center.",bLab:"Analista",bLabD:"Guarda un expediente en el Data Lab."},
+   bDet:"Detective",bDetD:"Resuelve tu primer caso.",bSher:"Detective maestro",bSherD:"Resuelve los 3 casos.",bSci:"Mente científica",bSciD:"Completa los 4 experimentos del Discovery Center.",bLab:"Analista",bLabD:"Guarda un expediente en el Data Lab.",
+   guideNav:"Manual",guideZone:"Manual de usuario",guideT:"Cómo usar EARTH//TRACE",guideLede:"Todo lo que necesitas para explorar, jugar e investigar, explicado paso a paso. No hace falta saber de ciencia ni de estadística.",
+   guideGo:"Empezar a explorar",guideTour:"Ver la bienvenida",guideToc:"Contenido",glossT:"Glosario",faqT:"Preguntas frecuentes",
+   wT:"¡Bienvenido a EARTH//TRACE!",wS:"Investiga cómo cambia la Tierra con datos satelitales de la NASA. Así funciona:",
+   w1:"Explora",w1d:"Toca un país en el mapa, mira sus imágenes satelitales y hazle preguntas.",w2:"Juega",w2d:"Resuelve casos de detective y gana XP, insignias y sellos.",w3:"Comprueba",w3d:"En el Data Lab descubre con estadística si un cambio es real.",
+   wGo:"Empezar",wGuide:"Leer el manual"},
  en:{askT:"Ask EARTH//TRACE",askS:"Type any question about how a European country is changing. Answers are based on the platform’s data.",
    askPh:"E.g.: What is happening to Switzerland’s glaciers?",askBtn:"Ask",thinking:"Searching the data…",
    modeAI:"AI answer (Claude)",modeLocal:"Answer from platform data",verify:"Always check the cited sources.",
@@ -877,7 +906,12 @@ const T={
    ndRed:"Reflected red light",ndNir:"Reflected near-infrared",ndF:"Forest",ndC:"Crop",ndD:"Desert",ndW:"Water",
    ndHigh:"Dense, healthy vegetation.",ndMid:"Moderate vegetation or crops.",ndLow:"Bare soil or very sparse vegetation.",ndNeg:"Water, clouds or snow.",
    nzScore:"Your score",again:"Play again",round:"Round",nzPick:"Tap the chart with a real trend.",tGood:"Correct!",tBad:"It was the other one.",
-   bDet:"Detective",bDetD:"Solve your first case.",bSher:"Master Detective",bSherD:"Solve all 3 cases.",bSci:"Scientific Mind",bSciD:"Complete the 4 Discovery Center experiments.",bLab:"Analyst",bLabD:"Save a case file in the Data Lab."}
+   bDet:"Detective",bDetD:"Solve your first case.",bSher:"Master Detective",bSherD:"Solve all 3 cases.",bSci:"Scientific Mind",bSciD:"Complete the 4 Discovery Center experiments.",bLab:"Analyst",bLabD:"Save a case file in the Data Lab.",
+   guideNav:"Guide",guideZone:"User guide",guideT:"How to use EARTH//TRACE",guideLede:"Everything you need to explore, play and investigate, step by step. No science or statistics background needed.",
+   guideGo:"Start exploring",guideTour:"Show the welcome",guideToc:"Contents",glossT:"Glossary",faqT:"Frequently asked questions",
+   wT:"Welcome to EARTH//TRACE!",wS:"Investigate how Earth is changing with NASA satellite data. Here’s how it works:",
+   w1:"Explore",w1d:"Tap a country on the map, view its satellite imagery and ask it questions.",w2:"Play",w2d:"Solve detective cases and earn XP, badges and stamps.",w3:"Check",w3d:"In the Data Lab, find out with statistics whether a change is real.",
+   wGo:"Start",wGuide:"Read the guide"}
 };
 const t=k=>T[LANG][k];
 const flag=i=>String.fromCodePoint(...[...i].map(c=>127397+c.charCodeAt(0)));
@@ -914,12 +948,13 @@ function render(){
   document.getElementById("nav").innerHTML=
     `<a href="#" ${r===""?'aria-current="page"':""}>${t("home")}</a>`+
     SECTIONS.map(s=>`<a href="#${s.id}" ${r.split("-")[0]===s.id?'aria-current="page"':""}>${s.en}</a>`).join("")+
-    `<a href="#developers" ${r==="developers"?'aria-current="page"':""}>API · Plugin · Skill</a>`;
+    `<a href="#developers" ${r==="developers"?'aria-current="page"':""}>API · Plugin · Skill</a>`+
+    `<a href="#guide" ${r==="guide"?'aria-current="page"':""}>📘 ${t("guideNav")}</a>`;
   drawHUD();
   document.getElementById("foot").innerHTML=`<div><b>EARTH//TRACE</b> · The Planet Leaves Evidence<br>${t("foot1")}</div><div style="max-width:46ch">${t("foot2")}</div>`;
   const m=r.match(/^explorer(?:-([a-z]{2}))?$/);
   const s=SECTIONS.find(x=>x.id===r);
-  if(m) renderExplorer(m[1]); else if(r==="workspace") renderWorkspace(); else if(r==="developers") renderDevelopers(); else if(r==="game"){if(G2.phase>=4)G2={id:null};renderGame();} else if(r==="lab") renderLab(); else if(r==="cases") renderCases(); else if(r==="discovery") renderDiscovery(); else if(s) renderSection(s); else renderHome();
+  if(m) renderExplorer(m[1]); else if(r==="workspace") renderWorkspace(); else if(r==="developers") renderDevelopers(); else if(r==="game"){if(G2.phase>=4)G2={id:null};renderGame();} else if(r==="lab") renderLab(); else if(r==="cases") renderCases(); else if(r==="discovery") renderDiscovery(); else if(r==="guide") renderGuide(); else if(s) renderSection(s); else renderHome();
 }
 window.addEventListener("hashchange",()=>{render();window.scrollTo(0,0);});
 
@@ -2249,6 +2284,102 @@ function dxNoise(el){
 }
 
 /* =========================================================
+   MANUAL DE USUARIO · guía de uso de la plataforma
+   ========================================================= */
+const GUIDE=[
+ {id:"start",ico:"🚀",t:{en:"Quick start (3 minutes)",es:"Inicio rápido (3 minutos)"},
+  p:{en:"New here? Follow these five steps and you will have used every key feature.",es:"¿Es tu primera vez? Sigue estos cinco pasos y habrás usado todas las funciones clave."},
+  s:{en:["Open <b>Earth Explorer</b> from the top menu.","Pick a region in the tabs (for example, <b>The Caribbean</b>) and tap a country on the map. Your passport gets its first stamp.","In the country profile, drag the slider in <b>Satellite view</b> to compare two years.","Type a question in <b>Ask EARTH//TRACE</b>, such as “What is changing here?”.","Open the <b>Game</b> and solve Case 1 to see whether a change is real."],
+     es:["Abre <b>Earth Explorer</b> en el menú de arriba.","Elige una región en las pestañas (por ejemplo, <b>El Caribe</b>) y toca un país en el mapa. Tu pasaporte recibe su primer sello.","En la ficha del país, desliza la barra de la <b>Vista satelital</b> para comparar dos años.","Escribe una pregunta en <b>Pregúntale a EARTH//TRACE</b>, como «¿Qué está cambiando aquí?».","Abre el <b>Game</b> y resuelve el Caso 1 para descubrir si un cambio es real."]}},
+ {id:"ui",ico:"🧭",t:{en:"Getting around",es:"Cómo moverte"},
+  p:{en:"Everything is in the top bar.",es:"Todo está en la barra superior."},
+  s:{en:["<b>Menu:</b> Home, the five sections, the developer zone and this guide.","<b>Rank and XP:</b> your progress. Tap it to open <b>My base</b>.","<b>EN / ES:</b> switches the whole platform between English and Spanish.","<b>◐:</b> switches between light and dark mode.","On a phone, slide the menu sideways to see every section."],
+     es:["<b>Menú:</b> Inicio, las cinco secciones, la zona de desarrolladores y este manual.","<b>Rango y XP:</b> tu progreso. Tócalo para abrir <b>Mi base</b>.","<b>EN / ES:</b> cambia toda la plataforma entre inglés y español.","<b>◐:</b> cambia entre modo claro y oscuro.","En el celular, desliza el menú hacia los lados para ver todas las secciones."]}},
+ {id:"explorer",ico:"🌍",t:{en:"01 · Earth Explorer",es:"01 · Earth Explorer"},
+  p:{en:"Find out what is changing in 110 countries, who measures it and how satellites see it.",es:"Descubre qué está cambiando en 110 países, quién lo mide y cómo lo ven los satélites."},
+  s:{en:["Choose a region tab. The numbers show how many countries you have stamped.","Colors on the map are phenomenon types. Tap a color in the legend to filter and read its analogy.","Tap a country (small islands are dotted circles) or search it by name or agency.","Read the profile: research question, what is changing, official agency and NASA datasets.","In <b>Satellite view</b>, choose a layer (true color, temperature, vegetation, snow, fires), change the two years and drag the slider. If clouds cover the image, try another year or open it in NASA Worldview.","Tap <b>Save to my base</b> to keep the country for later."],
+     es:["Elige una pestaña de región. Los números muestran cuántos países has sellado.","Los colores del mapa son tipos de fenómeno. Toca un color de la leyenda para filtrar y leer su analogía.","Toca un país (las islas pequeñas son círculos punteados) o búscalo por nombre o institución.","Lee la ficha: pregunta de investigación, qué está cambiando, institución oficial y datos de la NASA.","En la <b>Vista satelital</b>, elige una capa (color real, temperatura, vegetación, nieve, incendios), cambia los dos años y desliza la barra. Si hay nubes, prueba otro año o ábrela en NASA Worldview.","Toca <b>Guardar en mi base</b> para conservar el país."]}},
+ {id:"ask",ico:"💬",t:{en:"Asking questions",es:"Hacer preguntas"},
+  p:{en:"The question box understands everyday language.",es:"La caja de preguntas entiende lenguaje cotidiano."},
+  s:{en:["Name a country or a phenomenon: “Who measures the weather in Kenya?”, “Which countries are losing ice?”.","The platform opens the country you mention automatically.","Answers use only the platform’s data and always include an analogy.","Tap a suggested question if you don’t know where to start."],
+     es:["Menciona un país o un fenómeno: «¿Quién mide el clima en Kenia?», «¿Qué países pierden hielo?».","La plataforma abre sola el país que mencionas.","Las respuestas usan solo los datos de la plataforma y siempre incluyen una analogía.","Toca una pregunta sugerida si no sabes por dónde empezar."]}},
+ {id:"discovery",ico:"💡",t:{en:"02 · Discovery Center",es:"02 · Discovery Center"},
+  p:{en:"Four short experiments to understand how the planet works.",es:"Cuatro experimentos cortos para entender cómo funciona el planeta."},
+  s:{en:["<b>Vanishing lakes:</b> move inflow and outflow, then press “Simulate 20 years”.","<b>Weighing water from space:</b> press “More water” and “Drought” to see how GRACE works.","<b>How a satellite sees plants:</b> try the forest, crop, desert and water presets.","<b>Real or noise?:</b> in five rounds, pick the chart with a real trend.","Each experiment you complete earns XP."],
+     es:["<b>Lagos que desaparecen:</b> mueve entradas y salidas y pulsa «Simular 20 años».","<b>Pesar el agua desde el espacio:</b> pulsa «Más agua» y «Sequía» para ver cómo funciona GRACE.","<b>Cómo ve un satélite las plantas:</b> prueba los botones de bosque, cultivo, desierto y agua.","<b>¿Real o ruido?:</b> en cinco rondas, elige la gráfica con tendencia real.","Cada experimento completado suma XP."]}},
+ {id:"game",ico:"🕵",t:{en:"03 · Detective game",es:"03 · Juego de detective"},
+  p:{en:"Each case has five phases and answers the four questions of the challenge.",es:"Cada caso tiene cinco fases y responde las cuatro preguntas del reto."},
+  s:{en:["<b>Scene:</b> read the mystery and your mission.","<b>Clues:</b> choose the instrument that explains the case. A wrong clue gives you a hint.","<b>Witnesses:</b> compare with another place and see whether they agree or contradict each other.","<b>Lab:</b> guess “real change” or “just noise”, then see the statistical verdict. Tap “Listen to the trend” to hear it.","<b>Case file:</b> the case closes with its stamp and goes to Global Case Files."],
+     es:["<b>Escena:</b> lee el misterio y tu misión.","<b>Pistas:</b> elige el instrumento que explica el caso. Una pista equivocada te da una ayuda.","<b>Testigos:</b> compara con otro lugar y mira si coinciden o se contradicen.","<b>Laboratorio:</b> apuesta «cambio real» o «solo ruido» y mira el veredicto estadístico. Toca «Escuchar la tendencia» para oírla.","<b>Expediente:</b> el caso se cierra con su sello y pasa a Global Case Files."]}},
+ {id:"lab",ico:"📊",t:{en:"04 · Data Lab",es:"04 · Data Lab"},
+  p:{en:"Test any real time series. This is where you check, with statistics, whether a change is significant.",es:"Analiza cualquier serie real. Aquí compruebas con estadística si un cambio es significativo."},
+  s:{en:["Get data: in NASA Giovanni pick a variable, draw the area, choose “Time Series, Area-Averaged”, press “Plot Data” and download the CSV.","In Series A, tap <b>Upload CSV</b>, or paste two columns (year or date, value). Monthly data are averaged per year automatically.","Optional: load Series B to compare two places or two variables.","Choose the period with the two year menus.","Read the cards: rate per year (Sen), total change, p-value and the traffic-light verdict.","Tap <b>Save as case file</b> or download the CSV."],
+     es:["Consigue datos: en NASA Giovanni elige una variable, dibuja el área, elige «Time Series, Area-Averaged», pulsa «Plot Data» y descarga el CSV.","En la Serie A toca <b>Subir CSV</b>, o pega dos columnas (año o fecha, valor). Los datos mensuales se promedian por año automáticamente.","Opcional: carga la Serie B para comparar dos lugares o dos variables.","Elige el período con los dos menús de año.","Lee las tarjetas: tasa por año (Sen), cambio total, valor p y el semáforo del veredicto.","Toca <b>Guardar como expediente</b> o descarga el CSV."]}},
+ {id:"cases",ico:"📁",t:{en:"05 · Global Case Files",es:"05 · Global Case Files"},
+  p:{en:"The library of every investigation.",es:"La biblioteca de todas las investigaciones."},
+  s:{en:["<b>Game cases:</b> unlock when you solve them.","<b>My case files:</b> what you saved in the Data Lab. Download them as Markdown or delete them.","<b>Country case files:</b> an open file for each of the 110 countries, ready to download."],
+     es:["<b>Casos del juego:</b> se desbloquean al resolverlos.","<b>Mis expedientes:</b> lo que guardaste en el Data Lab. Descárgalos en Markdown o bórralos.","<b>Expedientes por país:</b> uno abierto para cada uno de los 110 países, listo para descargar."]}},
+ {id:"base",ico:"🎒",t:{en:"My base, XP and badges",es:"Mi base, XP e insignias"},
+  p:{en:"Your progress and your exports.",es:"Tu progreso y tus exportaciones."},
+  s:{en:["You earn XP by stamping countries, comparing images, asking, solving cases and completing experiments.","Ranks go from Space Cadet to Planet Guardian. Badges show what you have achieved.","<b>Take it to your workspace:</b> download your saved countries as Markdown (Notion, Google Docs), CSV (Excel, Sheets) or JSON (code).","Progress is saved in this browser only. No account is needed."],
+     es:["Ganas XP sellando países, comparando imágenes, preguntando, resolviendo casos y completando experimentos.","Los rangos van de Cadete espacial a Guardián del planeta. Las insignias muestran tus logros.","<b>Llévatelo a tu espacio de trabajo:</b> descarga tus países guardados en Markdown (Notion, Google Docs), CSV (Excel, Sheets) o JSON (código).","El progreso se guarda solo en este navegador. No hace falta crear cuenta."]}},
+ {id:"dev",ico:"🧩",t:{en:"API, plugin and Skill",es:"API, plugin y Skill"},
+  p:{en:"For teachers, media and developers who want to reuse the data.",es:"Para docentes, medios y desarrolladores que quieran reutilizar los datos."},
+  s:{en:["<b>API:</b> five JSON files with all the data. Try them in the developer zone.","<b>Plugin:</b> choose a country, copy the two lines of code and paste them into any website.","<b>Skill:</b> download SKILL.md to teach an AI assistant to use EARTH//TRACE."],
+     es:["<b>API:</b> cinco archivos JSON con todos los datos. Pruébalos en la zona de desarrolladores.","<b>Plugin:</b> elige un país, copia las dos líneas de código y pégalas en cualquier web.","<b>Skill:</b> descarga SKILL.md para enseñarle a un asistente de IA a usar EARTH//TRACE."]}}
+];
+const GLOSS=[
+ ["Trend","Tendencia","The general direction of a series over many years, beyond the ups and downs.","La dirección general de una serie durante muchos años, más allá de las subidas y bajadas."],
+ ["Significant","Significativo","A change strong and consistent enough that it is very unlikely to be chance.","Un cambio tan fuerte y constante que es muy improbable que sea casualidad."],
+ ["p-value","Valor p","The probability of seeing a pattern this strong by pure chance. Below 0.05 we call it significant.","La probabilidad de ver un patrón así de fuerte por pura casualidad. Por debajo de 0,05 lo llamamos significativo."],
+ ["Mann-Kendall test","Prueba de Mann-Kendall","Checks whether most later values are higher (or lower) than earlier ones.","Comprueba si la mayoría de los valores posteriores son mayores (o menores) que los anteriores."],
+ ["Sen’s slope","Pendiente de Sen","The typical change per year, ignoring outliers.","El cambio típico por año, sin dejarse llevar por valores extremos."],
+ ["Anomaly","Anomalía","The difference from a reference value, such as ice mass compared with 2002.","La diferencia respecto a un valor de referencia, como la masa de hielo comparada con 2002."],
+ ["NDVI","NDVI","A vegetation index from −1 to 1. Higher means greener, healthier plants.","Un índice de vegetación de −1 a 1. Más alto significa plantas más verdes y sanas."],
+ ["GRACE / GRACE-FO","GRACE / GRACE-FO","Twin satellites that weigh water and ice through gravity.","Satélites gemelos que pesan el agua y el hielo a través de la gravedad."],
+ ["Time series","Serie de tiempo","The same measurement repeated over time, for example once a year.","La misma medición repetida en el tiempo, por ejemplo una vez al año."],
+ ["Gt (gigatonne)","Gt (gigatonelada)","One billion metric tonnes, roughly one cubic kilometer of water.","Mil millones de toneladas, aproximadamente un kilómetro cúbico de agua."]
+];
+const FAQ=[
+ [{en:"Do I need an account?",es:"¿Necesito una cuenta?"},{en:"No. Everything works in the browser and your progress is saved on your own device.",es:"No. Todo funciona en el navegador y tu progreso se guarda en tu propio dispositivo."}],
+ [{en:"Are the data real?",es:"¿Los datos son reales?"},{en:"Satellite images come live from NASA GIBS. The Greenland case and the Antarctica witness use the official NASA JPL GRACE series. Cases 1 and 2 use illustrative values of documented trends and are labeled that way. In the Data Lab you can analyze any real series you download.",es:"Las imágenes satelitales llegan en vivo desde NASA GIBS. El caso de Groenlandia y el testigo de la Antártida usan la serie oficial de NASA JPL (GRACE). Los casos 1 y 2 usan valores ilustrativos de tendencias documentadas y están marcados así. En el Data Lab puedes analizar cualquier serie real que descargues."}],
+ [{en:"The satellite image looks empty or cloudy.",es:"La imagen satelital sale vacía o con nubes."},{en:"Each image shows a single day. Change the year, or tap “Open in NASA Worldview” to choose another day.",es:"Cada imagen muestra un solo día. Cambia el año o toca «Abrir en NASA Worldview» para elegir otro día."}],
+ [{en:"Why are national weather services included?",es:"¿Por qué aparecen servicios meteorológicos nacionales?"},{en:"Satellites measure every country the same way; ground stations confirm what satellites see. Non-NASA sources are always labeled.",es:"Los satélites miden todos los países de la misma manera; las estaciones en tierra confirman lo que ven. Las fuentes que no son de la NASA siempre están identificadas."}],
+ [{en:"Can I use it in class?",es:"¿Puedo usarlo en clase?"},{en:"Yes. A suggested lesson: each student explores one country, asks two questions, solves a game case and presents the case file.",es:"Sí. Una clase sugerida: cada estudiante explora un país, hace dos preguntas, resuelve un caso del juego y presenta su expediente."}],
+ [{en:"How do I reset my progress?",es:"¿Cómo reinicio mi progreso?"},{en:"In My base, at the bottom, tap “Reset my progress”.",es:"En Mi base, al final, toca «Reiniciar mi progreso»."}]
+];
+function renderGuide(){
+  const L=LANG, g=k=>k[L];
+  main.innerHTML=`
+  <section class="page-head"><div class="wrap"><span class="n">📘 ${t("guideZone")}</span><h1>${t("guideT")}</h1><p>${t("guideLede")}</p>
+    <div class="cta" style="margin-top:18px"><a class="btn lime" href="#explorer">${t("guideGo")}</a><button class="btn line" id="tourBtn">${t("guideTour")}</button></div></div></section>
+  <section class="block" style="padding-top:clamp(24px,4vw,40px)"><div class="wrap guide">
+    <nav class="toc" aria-label="${t("guideToc")}"><b>${t("guideToc")}</b>${GUIDE.map(s=>`<a href="#guide" data-to="g-${s.id}">${s.ico} ${g(s.t)}</a>`).join("")}
+      <a href="#guide" data-to="g-gloss">📖 ${t("glossT")}</a><a href="#guide" data-to="g-faq">❓ ${t("faqT")}</a></nav>
+    <div class="gbody">
+      ${GUIDE.map(s=>`<article class="gsec" id="g-${s.id}"><h2><span aria-hidden="true">${s.ico}</span> ${g(s.t)}</h2><p class="intro">${g(s.p)}</p>
+        <ol class="gsteps">${s.s[L].map(x=>`<li>${x}</li>`).join("")}</ol></article>`).join("")}
+      <article class="gsec" id="g-gloss"><h2>📖 ${t("glossT")}</h2><dl class="gloss">${GLOSS.map(r=>`<div><dt>${L==="en"?r[0]:r[1]}</dt><dd>${L==="en"?r[2]:r[3]}</dd></div>`).join("")}</dl></article>
+      <article class="gsec" id="g-faq"><h2>❓ ${t("faqT")}</h2>${FAQ.map(f=>`<details class="faq"><summary>${g(f[0])}</summary><p>${g(f[1])}</p></details>`).join("")}</article>
+    </div></div></section>`;
+  main.querySelectorAll("[data-to]").forEach(a=>a.onclick=ev=>{ev.preventDefault();document.getElementById(a.dataset.to).scrollIntoView({behavior:reduced?"auto":"smooth"});});
+  document.getElementById("tourBtn").onclick=()=>showWelcome(true);
+}
+function showWelcome(force){
+  let seen=false; try{seen=localStorage.getItem("earthtrace-welcome")==="1";}catch(e){}
+  if(seen&&!force)return;
+  const d=document.createElement("dialog"); d.className="welcome"; d.setAttribute("aria-labelledby","wT");
+  d.innerHTML=`<h2 id="wT">${t("wT")}</h2><p>${t("wS")}</p>
+    <ol class="wsteps"><li><span>🌍</span><b>${t("w1")}</b><small>${t("w1d")}</small></li><li><span>🕵</span><b>${t("w2")}</b><small>${t("w2d")}</small></li><li><span>📊</span><b>${t("w3")}</b><small>${t("w3d")}</small></li></ol>
+    <div class="cta"><a class="btn lime" href="#explorer" data-close>${t("wGo")}</a><a class="btn ghost-d" href="#guide" data-close>${t("wGuide")}</a></div>`;
+  document.body.appendChild(d);
+  const close=()=>{try{localStorage.setItem("earthtrace-welcome","1");}catch(e){}d.close();d.remove();};
+  d.querySelectorAll("[data-close]").forEach(a=>a.addEventListener("click",close));
+  d.addEventListener("cancel",close);
+  if(d.showModal)d.showModal(); else d.setAttribute("open","");
+}
+
+/* =========================================================
    PÁGINAS DE SECCIÓN (se construyen en las siguientes partes)
    ========================================================= */
 function renderSection(s){
@@ -2270,13 +2401,14 @@ function renderSection(s){
 /* =========================================================
    CONTROLES
    ========================================================= */
-document.getElementById("langBtn").onclick=()=>{LANG=LANG==="es"?"en":"es";render();};
+document.getElementById("langBtn").onclick=()=>{LANG=LANG==="es"?"en":"es";try{localStorage.setItem("earthtrace-lang",LANG);}catch(e){}render();};
 document.getElementById("themeBtn").onclick=()=>{
   const root=document.documentElement;
   const dark=root.dataset.theme?root.dataset.theme==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches;
   root.dataset.theme=dark?"light":"dark";
 };
 render();
+setTimeout(()=>showWelcome(false),600);
 </script>
 </body>
 </html>
