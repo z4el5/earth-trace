@@ -37,6 +37,7 @@ input:focus{border-color:var(--aqua);box-shadow:0 0 0 3px rgba(77,182,172,.25)}
 input::placeholder{color:#7FA27A}
 form button{background:var(--lime);color:#0B3D1F;border:none;border-radius:14px;padding:0 16px;font:inherit;font-weight:800;cursor:pointer}
 form button:disabled{opacity:.5}
+.why{display:block;margin-top:6px;font-size:11px;color:#F2A65A}
 footer{font-size:11px;color:#7FA27A;text-align:center;padding:0 12px 10px;background:rgba(6,36,15,.7)}
 footer a{color:var(--muted)}
 </style>
@@ -82,15 +83,25 @@ async function ask(q){
   const found=findCountries(q);
   const ctx={mentioned:found.map(p=>({country:p["name_"+LANG],agency:p.official_source.agency,phenomena:p.phenomena[LANG],research_question:p.research_question[LANG],nasa_datasets:p.nasa_datasets.map(d=>d.name)})),
     platform:"EARTH//TRACE covers 110 countries; Greenland real NASA JPL GRACE trend about -268 Gt/yr (2003-2023, Mann-Kendall p<0.001).",history:history.slice(-3),channel:qs.get("src")||"widget"};
-  try{
-    const ctl=new AbortController(); const to=setTimeout(()=>ctl.abort(),25000);
-    const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q,lang:LANG,context:ctx}),signal:ctl.signal});
-    clearTimeout(to); const j=await r.json(); if(!r.ok||!j.answer)throw new Error(j.error||"ai");
-    wait.textContent=j.answer; const tag=document.createElement("span");tag.className="tag";tag.textContent=t("ai");wait.appendChild(document.createElement("br"));wait.appendChild(tag);
-    if(found[0]){const a=document.createElement("div");a.innerHTML=`<a href="${BASE}#explorer-${found[0].code.toLowerCase()}" target="_blank" rel="noopener">${t("open")} →</a>`;wait.appendChild(a);}
-    history.push({q,a:j.answer.slice(0,300)});
-  }catch(e){
+  let err="";
+  for(let attempt=0;attempt<2;attempt++){
+    const ctl=new AbortController(); const to=setTimeout(()=>ctl.abort(),40000);
+    try{
+      const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q,lang:LANG,context:ctx}),signal:ctl.signal});
+      const j=await r.json().catch(()=>({error:"bad_response_"+r.status}));
+      if(r.ok&&j.answer){
+        wait.textContent=j.answer; const tag=document.createElement("span");tag.className="tag";tag.textContent=t("ai");wait.appendChild(document.createElement("br"));wait.appendChild(tag);
+        if(found[0]){const a=document.createElement("div");a.innerHTML=`<a href="${BASE}#explorer-${found[0].code.toLowerCase()}" target="_blank" rel="noopener">${t("open")} →</a>`;wait.appendChild(a);}
+        history.push({q,a:j.answer.slice(0,300)}); err=""; break;
+      }
+      err=(j.error||"error")+(j.detail?": "+j.detail:""); console.warn("EARTH//TRACE IA:",err,j.tried||"");
+      if(r.status===403||r.status===400||r.status===500)break;
+    }catch(e){err=e.name==="AbortError"?"timeout":(e.message||"network");}
+    finally{clearTimeout(to);}
+  }
+  if(err){
     wait.innerHTML=found.length?`${t("down")}\n\n${found.map(localCard).join("\n\n")}<br><span class="tag loc">${t("loc")}</span>`:t("none");
+    const why=document.createElement("small");why.className="why";why.textContent="· "+err.slice(0,160);wait.appendChild(why);
   }
   $("send").disabled=false; $("log").scrollTop=1e9;
 }
