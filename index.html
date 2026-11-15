@@ -642,7 +642,7 @@ const SOURCES={
 const T={
  es:{askT:"Pregúntale a EARTH//TRACE",askS:"Escribe cualquier pregunta sobre los cambios de un país europeo. La respuesta se basa en los datos de la plataforma.",
    askPh:"Ej.: ¿Qué está pasando con los glaciares de Suiza?",askBtn:"Preguntar",thinking:"Buscando en los datos…",
-   modeAI:"Respuesta con IA (Claude)",modeLocal:"Respuesta con los datos de la plataforma",verify:"Verifica siempre con las fuentes citadas.",
+   modeAI:"Respuesta con IA (Claude)",modeAI2:"Respuesta con IA",modeLocal:"Respuesta con los datos de la plataforma",verify:"Verifica siempre con las fuentes citadas.",
    seeProf:"Ver ficha de",locNoCountry:"Menciona un país europeo de la plataforma (por ejemplo, España o Noruega) o un fenómeno (glaciares, incendios, sequía…) y te respondo con sus datos.",
    cq1:"¿Quién mide el clima en {c}?",cq2:"¿Qué datos de la NASA sirven para estudiar {c}?",cq3:"¿Qué está cambiando en {c}?",
    gq1:"¿Qué países de Europa pierden hielo?",gq2:"¿Dónde hay incendios grandes en Europa?",gq3:"¿Qué está cambiando en Grecia?",
@@ -778,7 +778,7 @@ const T={
    wGo:"Empezar",wGuide:"Leer el manual"},
  en:{askT:"Ask EARTH//TRACE",askS:"Type any question about how a European country is changing. Answers are based on the platform’s data.",
    askPh:"E.g.: What is happening to Switzerland’s glaciers?",askBtn:"Ask",thinking:"Searching the data…",
-   modeAI:"AI answer (Claude)",modeLocal:"Answer from platform data",verify:"Always check the cited sources.",
+   modeAI:"AI answer (Claude)",modeAI2:"AI answer",modeLocal:"Answer from platform data",verify:"Always check the cited sources.",
    seeProf:"See profile of",locNoCountry:"Mention a European country on the platform (for example, Spain or Norway) or a phenomenon (glaciers, wildfires, drought…) and I’ll answer with its data.",
    cq1:"Who measures the weather in {c}?",cq2:"Which NASA data help study {c}?",cq3:"What is changing in {c}?",
    gq1:"Which European countries are losing ice?",gq2:"Where are there big wildfires in Europe?",gq3:"What is changing in Greece?",
@@ -1593,6 +1593,8 @@ function drawSat(c){
 }
 
 /* ---------- Pregúntale a EARTH//TRACE ---------- */
+/* Dirección del asistente de IA (Cloudflare Worker). Vacío = motor local. */
+const AI_ENDPOINT="";
 let SAMPLE=null, DL=null;
 (async()=>{try{if(window.claude&&window.claude.use){[SAMPLE,DL]=await Promise.all([window.claude.use("sample"),window.claude.use("downloads")]);}}catch(e){}
   const by=document.getElementById("askMode"); if(by) by.textContent=t(SAMPLE?"modeAI":"modeLocal");})();
@@ -1737,6 +1739,12 @@ function localAnswerCore(q){
       `That question isn’t about Earth science, so it isn’t in our data. Here I can help with how ${c?c.en:"a country"} is changing: ice, drought, wildfires, floods, coasts, water or forests.`),
       follow:c?[L2(`¿Qué está cambiando en ${c.es}?`,`What is changing in ${c.en}?`),L2(`¿Quién mide el clima en ${c.es}?`,`Who measures the weather in ${c.en}?`)]:[t("gq3"),t("gq1")]};
   }
+  if(/( mes | meses | estacion | estaciones | temporada | epoca | etapa del ano | invierno | verano | primavera | otono | month | months | season | seasons | winter | summer | spring | autumn | cuando llueve | when does it rain | clima normal | climate normal | promedio | average )/.test(n)||/ (llueve|nieva|hace frio|hace calor|rains|snows) /.test(n)){
+    const c=cs[0]||null, v=/(llu|rain|precip)/.test(n)?"GPM IMERG":/(niev|snow)/.test(n)?"MODIS MOD10A1":/(calor|frio|temperat|heat|cold|hot)/.test(n)?"MODIS MOD11A2":"GPM IMERG";
+    return {text:L2(`📅 Esa es una pregunta sobre el clima por meses o estaciones${c?` en ${c.es}`:""}. La plataforma todavía no guarda datos mensuales, así que no te doy una respuesta inventada.\n\nPuedes averiguarlo con datos reales de la NASA:\n1. Abre NASA Giovanni y elige ${v}.\n2. Dibuja el área${c?` de ${c.es}`:""} y elige «Time Series, Area-Averaged» con varios años.\n3. Descarga el CSV: verás en qué meses los valores son más altos. Súbelo al Data Lab para estudiar la tendencia.${c?`\n\nLo que sí documentamos en ${c.es}: ${DATA[c.i].ph.es[0]}`:""}`,
+      `📅 That’s a question about climate by month or season${c?` in ${c.en}`:""}. The platform doesn’t store monthly data yet, so I won’t give you a made-up answer.\n\nYou can find out with real NASA data:\n1. Open NASA Giovanni and choose ${v}.\n2. Draw the area${c?` of ${c.en}`:""} and pick “Time Series, Area-Averaged” over several years.\n3. Download the CSV: you’ll see which months have the highest values. Upload it to the Data Lab to study the trend.${c?`\n\nWhat we do document in ${c.en}: ${DATA[c.i].ph.en[0]}`:""}`),
+      follow:c?[L2(`¿Qué está cambiando en ${c.es}?`,`What is changing in ${c.en}?`),L2("¿Cómo funciona el Data Lab?","How does the Data Lab work?")]:[L2("¿Cómo funciona el Data Lab?","How does the Data Lab work?")]};
+  }
   // 2. lugares con datos reales
   if(special&&!cs.length){QA_LAST={country:null,intent};return specialAnswer(special[0]);}
   // 3. comparar dos países
@@ -1777,6 +1785,9 @@ function localAnswerCore(q){
     follow:[t("gq3"),t("gq1"),L2("¿Qué está cambiando en Europa?","What is changing in Europe?"),L2("¿Qué es Mann-Kendall?","What is Mann-Kendall?")]};
 }
 
+function profileData(c){const e=DATA[c.i];return {country:c[LANG],code:c.i,region:CONT[c.c][LANG],agency:e.inst,agency_links:e.urls,
+  phenomenon_type:CATS[e.cat][LANG],what_is_changing:e.ph[LANG],research_question:e.q[LANG],analogy:CATS[e.cat].an[LANG],
+  nasa_datasets:e.nasa.map(k=>({name:NASA[k].n,agency:NASA[k].o,measures:NASA[k][LANG],analogy:NASA[k].an[LANG]})),note:e.note?e.note[LANG]:null};}
 async function ask(q){
   q=q.trim(); if(!q)return;
   const out=document.getElementById("answer");
@@ -1794,6 +1805,18 @@ async function ask(q){
     const f=(r.follow||[]).filter(Boolean);
     if(f.length){const box=document.createElement("div");box.className="chips";box.innerHTML=`<span class="lbl2" style="width:100%;margin:6px 0 0">${t("followT")}</span>`+f.map(x=>`<button type="button">${escapeHtml(x)}</button>`).join("");
       document.getElementById("aacts").after(box);box.querySelectorAll("button").forEach(b=>b.onclick=()=>{document.getElementById("askIn").value=b.textContent;ask(b.textContent);});}};
+  if(!SAMPLE&&AI_ENDPOINT){
+    try{
+      const ctx={selected:sc?profileData(sc):null,mentioned:findCountries(q).slice(0,3).map(profileData),
+        real_nasa_series:{greenland_ice_mass_gt:{years:gKey(GCASES[2]).years,values:gKey(GCASES[2]).values},antarctica_ice_mass_gt:{years:WITNESS.antarctica.years,values:WITNESS.antarctica.values}},
+        countries:COUNTRIES.map(x=>`${x.i}=${x[LANG]}(${DATA[x.i].cat})`).join(", "),history:askHistory.slice(-3)};
+      const ctl=new AbortController(); const to=setTimeout(()=>ctl.abort(),20000);
+      const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q,lang:LANG,context:ctx}),signal:ctl.signal});
+      clearTimeout(to);
+      const j=await r.json(); if(!r.ok||!j.answer)throw new Error(j.error||"ai");
+      txt.textContent=j.answer; askHistory.push({q,a:j.answer.slice(0,400)}); finish("modeAI2"); return;
+    }catch(e){ /* sin conexión o límite alcanzado: responde el motor local */ }
+  }
   if(!SAMPLE){showLocal();return;}
   if(askAbort)askAbort.abort(); askAbort=new AbortController();
   const catalog=COUNTRIES.map(x=>`${x.i}=${x[LANG]}(${DATA[x.i].cat})`).join(", ");
